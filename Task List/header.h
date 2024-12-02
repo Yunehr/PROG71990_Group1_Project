@@ -34,19 +34,19 @@ enum Months {
 	Dec
 };
 
-//I create one struct for task informations.
-typedef struct Info {
-	int month;
-	int day;
+//I create one struct for task informations.				// we do not need multiple task lists **yet** so no need for 2 structs, we can combine their ideas in an overall update
+typedef struct Info {										// instead of searching by month or day we can search by id# and maybe display by tag type (important, not important, food, housework, school, etc...)
+	int month;												//				- the tag could be an enum, and used to display a range of tasks instead of months
+	int day;												//				- the id# an be used for displaying a single task
 	char name[NAME_LENGTH];
-	char description[MAX_LENGTH];
+	char description[MAX_LENGTH];							// doing what is said above will make storing and reading the tasks easier since we can just save upon exiting the program, and load upon launching program
 }INFO, * PINFO;
 
 //And one struct for task id of the information.
 typedef struct TASK {
 	int id;
 	INFO* data;
-}TASK, * PTASK;
+}TASK, * PTTASK;
 
 void DisplayMenu(void);
 void AddTask(TASK* tasks);
@@ -62,28 +62,6 @@ void DisplayAll(const TASK* tasks);
 void SearchTask(const TASK* tasks);
 
 //Save/Read from disk
-bool WriteTaskListToFile(TASK t, char* filename) {
-	FILE* fp = fopen(filename, "w"); //writing to file
-	if (fp == NULL) {
-		fprintf(stderr, "error, not able to open file for writing\n");
-		return false;
-	}
-	// what do we want to write as identifiers/how are they stored
-
-	fclose(fp);
-	return true;
-}
-
-bool ReadTaskListFromFile(TASK* t, char* filename) {
-	FILE* fp = fopen(filename, "r");    // read from file
-	if (fp == NULL) {  
-		fprintf(stderr, "error, not able to open file for writing\n");
-		return false;
-	}
-
-	//need to finish write file before continuing
-
-	fclose(fp);
-	return true;
-}
+bool WriteTaskListToFile(TASK t, char* filename);
+bool ReadTaskListFromFile(TASK* t, char* filename);
 

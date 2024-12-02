@@ -14,7 +14,7 @@ void DisplayMenu(void) {
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
-void AddTask(PTTASK tasks[], int* taskCount) {
+void AddTask(TASK tasks[], int* taskCount) {
     if (*taskCount >= MAX_TASKS) { //checks we did not create too many tasks
         printf("Task list is full, cannot add more tasks \n");
         return;
@@ -42,7 +42,7 @@ void AddTask(PTTASK tasks[], int* taskCount) {
     printf("Task Added Successfully!\n");
 
 }
-void DeleteTask(PTTASK tasks[], int* taskCount) {
+void DeleteTask(PTTASK tasks[], int* taskCount) {    
     if (*taskCount == 0) {
         printf("There are no tasks to delete.\n");
         return;
@@ -229,3 +229,28 @@ void SearchTask(const TASK* tasks) {
         tasks->data[temp].description);
 }
 
+bool WriteTaskListToFile(TASK t, char* filename) {
+    FILE* fp = fopen(filename, "w"); //writing to file
+    if (fp == NULL) {
+        fprintf(stderr, "error, not able to open file for writing\n");
+        return false;
+    }
+    // what do we want to write as identifiers/how are they stored
+
+    fclose(fp);
+    return true;
+}
+
+
+bool ReadTaskListFromFile(TASK* t, char* filename) {
+    FILE* fp = fopen(filename, "r");    // read from file
+    if (fp == NULL) {
+        fprintf(stderr, "error, not able to open file for writing\n");
+        return false;
+    }
+
+    //need to finish write file before continuing
+
+    fclose(fp);
+    return true;
+}
