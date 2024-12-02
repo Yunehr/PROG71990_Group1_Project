@@ -102,7 +102,6 @@ void UpdateTask(PTTASK tasks[], int taskCount) {
 //If found, return int i.
 int FindByDate(TASK* tasks, int month, int day) {
     int i = 0;
-    int j = 0;
     for (i = 0; i < tasks->id; i++) {
         if (tasks->data[i].month == month &&
             tasks->data[i].day == day) {
@@ -113,7 +112,7 @@ int FindByDate(TASK* tasks, int month, int day) {
     return -1;
 }
 
-void DisplaySingle(const TASK* tasks) {
+void DisplaySingle(const TASK* tasks, int month, int day) {
     //Set a char to search
     int month = 0;
     int day = 0;
@@ -121,18 +120,46 @@ void DisplaySingle(const TASK* tasks) {
     scanf("%d", &month);
     printf("Pleast input the day of task you want to search:");
     scanf("%d", &day);
-    //Use temp to get int i, then print the tasks->data[temp].name and description.
-    int temp = FindByDate(tasks, month, day);
-    if (temp == EOF) {
-        printf("The task doesn't exist.\n");
-        return;
+    //search the data to find the task in the same date.
+    int i = 0;
+    int found = 0;
+    for (i = 0; i < tasks->id; i++) {
+        //Check if a task exists for a specified date
+        if (tasks->data[i].month == month &&
+            tasks->data[i].day == day) {
+            found = 1;
+            break;
+        }
+        if (!found) {
+            printf("The task doesn't exist.\n");
+            return;
+        }
+        //If exist,print the head line "Month", "Day", "Name", "Description" first.
+        printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+        //Then print every task in the specific date, use loop because maybe not only one task in one date.
+        for (i = 0; i < tasks->id; i++) {
+            if (tasks->data[i].month == month &&
+                tasks->data[i].day == day) {
+                printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                    tasks->data[i].month,
+                    tasks->data[i].day,
+                    tasks->data[i].name,
+                    tasks->data[i].description);
+            }
+        }
     }
-    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
-    printf("%-2d\t%-2d\t%-20s\t%-100s\n",
-        tasks->data[temp].month,
-        tasks->data[temp].day,
-        tasks->data[temp].name,
-        tasks->data[temp].description);
+    //Because I need to find every task in one date, so abondon this function temporarily.
+    //int temp = FindByDate(tasks, month, day);
+    //if (temp == EOF) {
+    //    printf("The task doesn't exist.\n");
+    //    return;
+    //}
+    //printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+    //printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+    //    tasks->data[temp].month,
+    //    tasks->data[temp].day,
+    //    tasks->data[temp].name,
+    //    tasks->data[temp].description);
 }
 
 void DisplayRange(const TASK* tasks) {
