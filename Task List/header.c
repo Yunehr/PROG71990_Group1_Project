@@ -96,6 +96,7 @@ void UpdateTask(PTTASK tasks[], int taskCount) {
         printf("Task ID not found.\n");
     }
 
+
 }
 
 //Use char name[] to compare with tasks->data[i].name through strcmp,if found, return int i.

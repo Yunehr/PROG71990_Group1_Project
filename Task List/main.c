@@ -1,5 +1,7 @@
+
 #include <stdio.h>
 #include "header.h"
+
 
 int main(void) {
 	PTTASK tasks[MAX_TASKS] = { NULL };
@@ -48,6 +50,7 @@ int main(void) {
 			SearchTask(&tasks);
 			break;
 		case EXIT:
+
 			printf("Quitting the program");
 			for (int i = 0; i < taskCount; i++) {
 				free(tasks[i]);
@@ -59,5 +62,7 @@ int main(void) {
 		}
 	} while (MenuInput);
 
+
 	return 0;
+
 }

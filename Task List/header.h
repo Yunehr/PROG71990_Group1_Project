@@ -59,3 +59,4 @@ void DisplaySingle(const TASK* tasks);
 void DisplayByRange(const TASK* tasks);
 void DisplayAll(const TASK* tasks);
 void SearchTask(const TASK* tasks);
+
