@@ -53,8 +53,9 @@ void DeleteTask(PTTASK tasks[], int* taskCount);
 void UpdateTask(PTTASK tasks[], int taskCount);
 
 //I create a function to search by date.
-int FindByDate(TASK* tasks, int month, int day);
-//Because this functions are display only, so I use const to avoid the content to be modified.
+int FindByName(TASK* tasks, char name[]);
+//Because this functions are display and search only, so I use const to avoid the content to be modified.
 void DisplaySingle(const TASK* tasks);
 void DisplayByRange(const TASK* tasks);
 void DisplayAll(const TASK* tasks);
+void SearchTask(const TASK* tasks);

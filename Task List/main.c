@@ -45,6 +45,7 @@ int main(void) {
 			break;
 		case SEARCH:
 			//search for a task;
+			SearchTask(&tasks);
 			break;
 		case EXIT:
 			printf("Quitting the program");
