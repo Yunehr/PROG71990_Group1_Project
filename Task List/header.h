@@ -56,5 +56,5 @@ void UpdateTask(PTTASK tasks[], int taskCount);
 int FindByDate(TASK* tasks, int month, int day);
 //Because this functions are display only, so I use const to avoid the content to be modified.
 void DisplaySingle(const TASK* tasks);
-void DisplayRange(const TASK* tasks);
+void DisplayByRange(const TASK* tasks);
 void DisplayAll(const TASK* tasks);

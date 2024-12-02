@@ -37,6 +37,7 @@ int main(void) {
 			break;
 		case DISPLAYRANGE:
 			//display a range of tasks;
+			DisplayByRange(&tasks);
 			break;
 		case DISPLAYALL:
 			//display a range of tasks;
