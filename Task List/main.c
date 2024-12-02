@@ -11,40 +11,46 @@ int main(void) {
 
 	do {
 		DisplayMenu();
-		validInput = scanf_s("%d", &MenuInput);
+		//If Menuinput = 0 loop will end, so this would be fine.
+		scanf_s("%d", &MenuInput);
 
-		if (validInput != 1) {
-			while (getchar() != '\n');
-			printf("Invalid Input. Please enter a number between 1 and 8:\n");
+		//if (validInput != 1) {
+		//	while (getchar() != '\n');
+		//	printf("Invalid Input. Please enter a number between 1 and 8:\n");
 
-		}
-		else if (MenuInput < 1 || MenuInput > 8) {
-			printf("Invalid Input. Please enter a number between 1 and 8: \n");
-		}
+		//}
+		//else if (MenuInput < 1 || MenuInput > 8) {
+		//	printf("Invalid Input. Please enter a number between 1 and 8: \n");
+		//}
 		switch (MenuInput)
 		{
-		case 1:
+		case ADD:
 			AddTask(tasks, &taskCount);
 			break;
-		case 2:
+		case DELETE:
 			DeleteTask(tasks, &taskCount);
 			break;
-		case 3:
+		case UPDATE:
 			UpdateTask(tasks, taskCount);
 			break;
-		case 4:
+		case DISPLAYSINGLE:
 			//display a single task:
+			DisplaySingle(&tasks);
 			break;
-		case 5:
+		case DISPLAYRANGE:
 			//display a range of tasks;
+			DisplayByRange(&tasks);
 			break;
-		case 6:
+		case DISPLAYALL:
 			//display a range of tasks;
+			DisplayAll(&tasks);
 			break;
-		case 7:
+		case SEARCH:
 			//search for a task;
+			SearchTask(&tasks);
 			break;
-		case 8:
+		case EXIT:
+
 			printf("Quitting the program");
 			for (int i = 0; i < taskCount; i++) {
 				free(tasks[i]);
@@ -54,7 +60,8 @@ int main(void) {
 			printf("Invalid input please try again");
 			break;
 		}
-	} while (MenuInput != 8);
+	} while (MenuInput);
+
 
 	return 0;
 
