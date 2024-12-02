@@ -11,7 +11,7 @@ void DisplayMenu(void) {
     printf("|4) Display a single task                               |\n");
     printf("|5) Display a range of tasks                            |\n");
     printf("|6) Search for a task                                   |\n");
-    printf("|7) Quit                                                |\n");
+    printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
 void AddTask(PTTASK tasks[], int* taskCount) {
@@ -100,29 +100,37 @@ void UpdateTask(PTTASK tasks[], int taskCount) {
 
 //Use char name[] to compare with tasks->data[i].name through strcmp.
 //If found, return int i.
-int FindByName(TASK* tasks, char name[]) {
+int FindByDate(TASK* tasks, int month, int day) {
     int i = 0;
+    int j = 0;
     for (i = 0; i < tasks->id; i++) {
-        if (strcmp(tasks->data[i].name, name) == 0) {
+        if (tasks->data[i].month == month &&
+            tasks->data[i].day == day) {
             return i;
         }
     }
+    //If didn't find, return -1.
     return -1;
 }
 
 void DisplaySingle(const TASK* tasks) {
     //Set a char to search
-    char name[NAME_LENGTH] = { 0 };
-    printf("Pleast input the name of task you want to search:");
-    scanf("%s", name);
+    int month = 0;
+    int day = 0;
+    printf("Pleast input the month of task you want to search:");
+    scanf("%d", &month);
+    printf("Pleast input the day of task you want to search:");
+    scanf("%d", &day);
     //Use temp to get int i, then print the tasks->data[temp].name and description.
-    int temp = FindByName(tasks, name);
+    int temp = FindByDate(tasks, month, day);
     if (temp == EOF) {
         printf("The task doesn't exist.\n");
         return;
     }
-    printf("%-20s\t%-100s\n", "name", "description");
-    printf("%-20s\t%-100s\n",
+    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+    printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+        tasks->data[temp].month,
+        tasks->data[temp].day,
         tasks->data[temp].name,
         tasks->data[temp].description);
 }
@@ -133,10 +141,12 @@ void DisplayRange(const TASK* tasks) {
 
 void DisplayAll(const TASK* tasks) {
     // \t means one press of Tab.
-    printf("%-20s\t%-100s\n", "name", "description");
+    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month","Day","Name", "Description");
     int i = 0;
     for (i = 0; i < tasks->id; i++) {
-        printf("%-20s\t%-100s\n",
+        printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+            tasks->data[i].month,
+            tasks->data[i].day,
             tasks->data[i].name,
             tasks->data[i].description);
     }

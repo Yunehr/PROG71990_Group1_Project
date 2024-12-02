@@ -17,24 +17,43 @@ enum Options {
 	DISPLAYALL,
 	SEARCH
 };
+//an enum for transit abbr. of months to int.
+enum Months {
+	Jan = 1,
+	Feb,
+	Mar,
+	Apr,
+	May,
+	Jun,
+	Jul,
+	Aug,
+	Sep,
+	Oct,
+	Nov,
+	Dec
+};
 
+//I create one struct for task informations.
 typedef struct Info {
+	int month;
+	int day;
 	char name[NAME_LENGTH];
 	char description[MAX_LENGTH];
 }INFO, * PINFO;
 
+//And one struct for task id of the information.
 typedef struct TASK {
 	int id;
 	INFO* data;
 }TASK, * PTASK;
 
 void DisplayMenu(void);
-void AddTask(PTTASK tasks[], int* taskCount);
+void AddTask(TASK* tasks);
 void DeleteTask(PTTASK tasks[], int* taskCount);
 void UpdateTask(PTTASK tasks[], int taskCount);
 
-//I create a function to search names.
-int FindByName(TASK* tasks, char name[]);
+//I create a function to search by date.
+int FindByDate(TASK* tasks, int month, int day);
 //Because this functions are display only, so I use const to avoid the content to be modified.
 void DisplaySingle(const TASK* tasks);
 void DisplayRange(const TASK* tasks);
