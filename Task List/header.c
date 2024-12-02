@@ -14,7 +14,7 @@ void DisplayMenu(void) {
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
-void AddTask(PTTASK tasks[], int* taskCount) {
+void AddTask(TASK tasks[], int* taskCount) {
     if (*taskCount >= MAX_TASKS) { //checks we did not create too many tasks
         printf("Task list is full, cannot add more tasks \n");
         return;
@@ -42,7 +42,7 @@ void AddTask(PTTASK tasks[], int* taskCount) {
     printf("Task Added Successfully!\n");
 
 }
-void DeleteTask(PTTASK tasks[], int* taskCount) {
+void DeleteTask(PTTASK tasks[], int* taskCount) {    
     if (*taskCount == 0) {
         printf("There are no tasks to delete.\n");
         return;
