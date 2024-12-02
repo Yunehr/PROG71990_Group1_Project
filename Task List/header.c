@@ -229,27 +229,71 @@ void SearchTask(const TASK* tasks) {
         tasks->data[temp].description);
 }
 
-bool WriteTaskListToFile(TASK t, char* filename) {
+bool WriteTaskToFile(INFO t, char* filename) {
     FILE* fp = fopen(filename, "w"); //writing to file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
-    // what do we want to write as identifiers/how are they stored
+    fprintf(fp, "%d\n", t.id);  //id#
+
+    //TODO: make WriteTagToFile()/ReadTagFromFile()
+    switch (t.tag) {        // tag        
+    case Dec:   fprintf(fp, "Dec\n");    // placeholders untill Types of tags are defined
+                break;
+    case Jan:   fprintf(fp, "Jan\n");
+                break;
+    default:    fprintf(stderr, "unknown Tag\n");
+                break; // return false
+    }
+    
+   
+    fprintf(fp, "%s\n", t.name);     // name
+    fprintf(fp, "%s\n", t.description);     // description
 
     fclose(fp);
     return true;
 }
 
 
-bool ReadTaskListFromFile(TASK* t, char* filename) {
+bool ReadTaskFromFile(INFO* t, char* filename) {
     FILE* fp = fopen(filename, "r");    // read from file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
+    
+    // id#
+    int id = 0; // initialize to 0 to be safe
+    int numResult = fscanf(fp, "%d", &id);
+    if (numResult != 1) {
+        fprintf(stderr, "error, not able to read task id# from file\n");
+        exit(EXIT_FAILURE);
+    }
 
-    //need to finish write file before continuing
+    // TAG
+    // ReadTagFromFile()
+
+    // name
+    char tmpName[NAME_LENGTH] = { 0 };
+    char* nameResult = fgets(tmpName, NAME_LENGTH, fp);
+    if (nameResult == NULL) {
+        fprintf(stderr, "error, not able to read name from file\n");
+        exit(EXIT_FAILURE);
+    }
+    CleanNewLineFromString(tmpName);
+    strncpy(t->name, tmpName, NAME_LENGTH);
+    
+
+    // description
+    char tmpDesc[NAME_LENGTH] = { 0 };
+    char* descResult = fgets(tmpDesc, NAME_LENGTH, fp);
+    if (descResult == NULL) {
+        fprintf(stderr, "error, not able to read name from file\n");
+        exit(EXIT_FAILURE);
+    }
+    CleanNewLineFromString(tmpDesc);
+    strncpy(t->name, tmpDesc, NAME_LENGTH);
 
     fclose(fp);
     return true;

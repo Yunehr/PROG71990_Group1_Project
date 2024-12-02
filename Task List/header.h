@@ -1,4 +1,5 @@
 #pragma once
+#include "utils.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@ enum Options {
 	SEARCH
 };
 //an enum for transit abbr. of months to int.
-enum Months {
+typedef enum Months {	// tag
 	Jan = 1,
 	Feb,
 	Mar,
@@ -32,12 +33,12 @@ enum Months {
 	Oct,
 	Nov,
 	Dec
-};
+}MONTHS, TAG;
 
 //I create one struct for task informations.				// we do not need multiple task lists **yet** so no need for 2 structs, we can combine their ideas in an overall update
 typedef struct Info {										// instead of searching by month or day we can search by id# and maybe display by tag type (important, not important, food, housework, school, etc...)
-	int month;												//				- the tag could be an enum, and used to display a range of tasks instead of months
-	int day;												//				- the id# an be used for displaying a single task
+	TAG tag;												//				- the tag could be an enum, and used to display a range of tasks instead of months
+	int id;												//				- the id# an be used for displaying a single task
 	char name[NAME_LENGTH];
 	char description[MAX_LENGTH];							// doing what is said above will make storing and reading the tasks easier since we can just save upon exiting the program, and load upon launching program
 }INFO, * PINFO;
@@ -62,6 +63,6 @@ void DisplayAll(const TASK* tasks);
 void SearchTask(const TASK* tasks);
 
 //Save/Read from disk
-bool WriteTaskListToFile(TASK t, char* filename);
-bool ReadTaskListFromFile(TASK* t, char* filename);
+bool WriteTaskToFile(INFO t, char* filename);
+bool ReadTaskFromFile(INFO* t, char* filename);
 
