@@ -1,7 +1,8 @@
 #pragma once
 #include <stdio.h>
-#include<string.h>
+#include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define NAME_LENGTH		100
 #define MAX_LENGTH		200
@@ -59,4 +60,30 @@ void DisplaySingle(const TASK* tasks);
 void DisplayByRange(const TASK* tasks);
 void DisplayAll(const TASK* tasks);
 void SearchTask(const TASK* tasks);
+
+//Save/Read from disk
+bool WriteTaskListToFile(TASK t, char* filename) {
+	FILE* fp = fopen(filename, "w"); //writing to file
+	if (fp == NULL) {
+		fprintf(stderr, "error, not able to open file for writing\n");
+		return false;
+	}
+	// what do we want to write as identifiers/how are they stored
+
+	fclose(fp);
+	return true;
+}
+
+bool ReadTaskListFromFile(TASK* t, char* filename) {
+	FILE* fp = fopen(filename, "r");    // read from file
+	if (fp == NULL) {  
+		fprintf(stderr, "error, not able to open file for writing\n");
+		return false;
+	}
+
+	//need to finish write file before continuing
+
+	fclose(fp);
+	return true;
+}
 
