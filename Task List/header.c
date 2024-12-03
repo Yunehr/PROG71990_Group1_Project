@@ -14,89 +14,100 @@ void DisplayMenu(void) {
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
-void AddTask(TASK tasks[], int* taskCount) {
-    if (*taskCount >= MAX_TASKS) { //checks we did not create too many tasks
+void AddTask(TASK* tasks) {
+    if (tasks->id >=MAX_TASKS)     { //checks we did not create too many tasks
         printf("Task list is full, cannot add more tasks \n");
         return;
     }
-    PTTASK newTask = (PTTASK)malloc(sizeof(TASK));
-    if (!newTask) {
-        printf("memory Allocation failed");
-        return;
+
+    INFO newTask = { 0 };
+    newTask.id = tasks->id + 1;
+    printf("Enter Task name:\n");
+    scanf(" %[^\n]", newTask.name);
+
+    printf("Enter task description: ");
+    scanf(" %[^\n]", newTask.description);
+
+    printf("Enter task tag (1-12 for months): ");
+    
+    int tagNum;
+    scanf("%d", &tagNum);
+    newTask.tag = (TAG)tagNum;
+
+    tasks->data[tasks->id] = newTask;
+    tasks->id++;
+
+    //save to file
+    char filename[20];
+    sprintf(filename, "task_%d.txt", newTask.id);
+    if (!WriteTaskToFile(newTask, filename)) {
+        printf("Error saving task\n");
     }
-    newTask->id = *taskCount + 1;
-
-    printf("Please enter task name: \n");
-    fgets(newTask->name, sizeof(newTask->name), stdin);
-    newTask->name[strcspn(newTask->name, "\n")] = '\0';
-
-    printf("Please enter the task description: \n");
-    fgets(newTask->description, sizeof(newTask->description), stdin);
-    newTask->description[strcspn(newTask->description, "\n")] = '\0';
-
-    tasks[*taskCount] = newTask;
-    (*taskCount)++;
-
-    //Need Save Function
 
     printf("Task Added Successfully!\n");
 
 }
-void DeleteTask(PTTASK tasks[], int* taskCount) {    
-    if (*taskCount == 0) {
-        printf("There are no tasks to delete.\n");
+void DeleteTask(TASK* tasks, int* taskCount) {    
+    if (tasks->id == 0) {
+        printf("No tasks to delete\n");
         return;
     }
     int id;
-    printf("Please enter the task ID to delete:\n");
-    scanf_s("%d", &id);
-    int found = 0;
-    for (int i = 0; i < *taskCount; ++i) {
-        if (tasks[i]->id == id) {
-            free(tasks[i]);
-            for (int j = i; j < *taskCount - 1; ++j) {
-                tasks[j] = tasks[j + 1];
+    printf("Enter task ID to delete: ");
+    scanf("%d", &id);
+    for (int i = 0; i < tasks->id; i++) {
+        if (tasks->data[i].id == id) {
+            // Remove file
+            char filename[20];
+            sprintf(filename, "task_%d.txt", id);
+            remove(filename);
+
+            // Shift remaining tasks
+            for (int j = i; j < tasks->id - 1; j++) {
+                tasks->data[j] = tasks->data[j + 1];
             }
-            tasks[*taskCount - 1] = NULL;
-            (*taskCount)--;
-            found = 1;
-            printf("Task Deleted Successfully!\n");
-            break;
+            tasks->id--;
+            printf("Task deleted\n");
+            return;
         }
     }
-    if (!found) {
-        printf("Task not found.\n");
-    }
-} // Needs a save function add
-void UpdateTask(PTTASK tasks[], int taskCount) {
-    if (taskCount == 0) {
-        printf("There are no tasks to update.\n");
+    printf("Task not found\n");
+}
+
+void UpdateTask(TASK* tasks, int taskCount) {
+    if (tasks->id == 0) {
+        printf("No tasks to update\n");
         return;
     }
     int id;
-    printf("Please enter the task ID to update:\n");
-    scanf_s("%d", &id);
-    int found = 0;
-    for (int i = 0; i < taskCount; i++) {
-        if (tasks[i]->id == id) {
-            printf("Enter new task name:\n");
-            fgets(tasks[i]->name, sizeof(tasks[i]->name), stdin);
-            tasks[i]->name[strcspn(tasks[i]->name, "\n")] = '\0';
+    printf("Enter task ID to update: ");
+    scanf("%d", &id);
 
-            printf("Enter new task description:\n");
-            fgets(tasks[i]->description, sizeof(tasks[i]->description), stdin);
-            tasks[i]->description[strcspn(tasks[i]->description, "\n")] = '\0';
+    for (int i = 0; i < tasks->id; i++) {
+        if (tasks->data[i].id == id) {
+            printf("Enter new name: ");
+            scanf(" %[^\n]", tasks->data[i].name);
 
-            printf("Tasks updated successfully!\n");
-            found = 1;
-            break;
+            printf("Enter new description: ");
+            scanf(" %[^\n]", tasks->data[i].description);
+
+            printf("Enter new tag (1-12 for months): ");
+            int tagNum;
+            scanf("%d", &tagNum);
+            tasks->data[i].tag = (TAG)tagNum;
+
+            // Update file
+            char filename[20];
+            sprintf(filename, "task_%d.txt", id);
+            if (!WriteTaskToFile(tasks->data[i], filename)) {
+                printf("Error saving updated task\n");
+            }
+
+            printf("Task updated\n");
+            return;
         }
     }
-    if (!found) {
-        printf("Task ID not found.\n");
-    }
-
-
+    printf("Task not found\n");
 }
 
 //Use char name[] to compare with tasks->data[i].name through strcmp,if found, return int i.
