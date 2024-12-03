@@ -8,6 +8,7 @@
 #define NAME_LENGTH		100
 #define MAX_LENGTH		200
 #define MAX_TASKS		100
+#define MAX_TAG_LENGTH	10
 
 enum Options {
 	EXIT,
@@ -66,6 +67,9 @@ void SearchTask(const TASK* tasks);
 bool WriteTagToFile(INFO t, FILE* fp);
 int ReadTagFromFile(FILE* fp);
 
-bool WriteTaskToFile(INFO t, char* filename);
-bool ReadTaskFromFile(INFO* t, char* filename);
+bool WriteTaskListToFile(TASK t, char* filename);
+bool WriteTaskToFile(INFO t, FILE* fp);
+
+bool ReadTaskListFromFile(TASK* t, char* filename);
+INFO ReadTaskFromFile(FILE* fp);
 
