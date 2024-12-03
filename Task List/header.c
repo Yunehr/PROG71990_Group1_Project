@@ -56,7 +56,7 @@ void AddTask(TASK* tasks) {
     WriteTaskToFile(newTask, fp);
     fclose(fp);
 }
-void DeleteTask(TASK* tasks, int* taskCount) {    
+void DeleteTask(TASK* tasks) {    
     if (!tasks->data) {
         printf("No tasks to delete\n");
         return;
