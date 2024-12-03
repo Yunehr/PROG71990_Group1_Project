@@ -151,7 +151,7 @@ void DisplaySingle(const TASK* tasks) {
             return;
         }
     }
-    //If tasks exist,print the title "Month", "Day", "Name", "Description" first.
+    //If tasks exist,print the title "ID", "Tag", "Name", "Description" first.
     //\t means one press of Tab.
     printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
     //Then use loop to print every task in the specific date, because there maybe not only one task in single date.
