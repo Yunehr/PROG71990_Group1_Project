@@ -25,13 +25,13 @@ int main(void) {
 		switch (MenuInput)
 		{
 		case ADD:
-			AddTask(tasks, &taskCount);
+			AddTask(&tasks);
 			break;
 		case DELETE:
-			DeleteTask(tasks, &taskCount);
+			DeleteTask(&tasks);
 			break;
 		case UPDATE:
-			UpdateTask(tasks, taskCount);
+			UpdateTask(&tasks);
 			break;
 		case DISPLAYSINGLE:
 			//display a single task:

@@ -15,13 +15,17 @@ void DisplayMenu(void) {
     printf("_________________________________________________________\n");
 }
 void AddTask(TASK* tasks) {
-    if (tasks->id >=MAX_TASKS)     { //checks we did not create too many tasks
-        printf("Task list is full, cannot add more tasks \n");
-        return;
+    int currentId = 0;
+    // Find highest existing ID
+    for (int i = 0; i < MAX_TASKS; i++) {
+        if (tasks->data[i].id > currentId) {
+            currentId = tasks->data[i].id;
+        }
     }
 
     INFO newTask = { 0 };
-    newTask.id = tasks->id + 1;
+    newTask.id = currentId + 1;
+
     printf("Enter Task name:\n");
     scanf(" %[^\n]", newTask.name);
 
@@ -32,41 +36,42 @@ void AddTask(TASK* tasks) {
     
     int tagNum;
     scanf("%d", &tagNum);
+    if (tagNum < 1 || tagNum > 12) {
+        printf("Invalid month number\n");
+        return;
+    }
     newTask.tag = (TAG)tagNum;
-
-    tasks->data[tasks->id] = newTask;
-    tasks->id++;
-
-    //save to file
-    char filename[20];
-    sprintf(filename, "task_%d.txt", newTask.id);
-    if (!WriteTaskToFile(newTask, filename)) {
-        printf("Error saving task\n");
+    for (int i = 0; i < MAX_TASKS; i++) {
+        if (tasks->data[i].id == 0) {
+            tasks->data[i] = newTask;
+            break;
+        }
     }
 
-    printf("Task Added Successfully!\n");
-
+    FILE* fp = fopen("tasks.txt", "a");
+    if (!fp) {
+        printf("Error opening file\n");
+        return;
+    }
+    WriteTaskToFile(newTask, fp);
+    fclose(fp);
 }
 void DeleteTask(TASK* tasks, int* taskCount) {    
-    if (tasks->id == 0) {
+    if (!tasks->data) {
         printf("No tasks to delete\n");
         return;
     }
     int id;
     printf("Enter task ID to delete: ");
     scanf("%d", &id);
-    for (int i = 0; i < tasks->id; i++) {
-        if (tasks->data[i].id == id) {
-            // Remove file
-            char filename[20];
-            sprintf(filename, "task_%d.txt", id);
-            remove(filename);
 
-            // Shift remaining tasks
-            for (int j = i; j < tasks->id - 1; j++) {
-                tasks->data[j] = tasks->data[j + 1];
-            }
-            tasks->id--;
+    for (int i = 0; i < MAX_TASKS; i++) {
+        if (tasks->data[i].id == id) {
+            tasks->data[i].id = 0;
+            memset(tasks->data[i].name, 0, NAME_LENGTH);
+            memset(tasks->data[i].description, 0, MAX_LENGTH);
+
+            WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task deleted\n");
             return;
         }
@@ -74,16 +79,18 @@ void DeleteTask(TASK* tasks, int* taskCount) {
     printf("Task not found\n");
 }
 
-void UpdateTask(TASK* tasks, int taskCount) {
-    if (tasks->id == 0) {
-        printf("No tasks to update\n");
+
+void UpdateTask(TASK* tasks) {
+    if (!tasks->data) {
+        printf("No tasks exist\n");
         return;
     }
+
     int id;
     printf("Enter task ID to update: ");
     scanf("%d", &id);
 
-    for (int i = 0; i < tasks->id; i++) {
+    for (int i = 0; i < MAX_TASKS; i++) {
         if (tasks->data[i].id == id) {
             printf("Enter new name: ");
             scanf(" %[^\n]", tasks->data[i].name);
@@ -94,15 +101,13 @@ void UpdateTask(TASK* tasks, int taskCount) {
             printf("Enter new tag (1-12 for months): ");
             int tagNum;
             scanf("%d", &tagNum);
+            if (tagNum < 1 || tagNum > 12) {
+                printf("Invalid month number\n");
+                return;
+            }
             tasks->data[i].tag = (TAG)tagNum;
 
-            // Update file
-            char filename[20];
-            sprintf(filename, "task_%d.txt", id);
-            if (!WriteTaskToFile(tasks->data[i], filename)) {
-                printf("Error saving updated task\n");
-            }
-
+            WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task updated\n");
             return;
         }
