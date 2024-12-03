@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include "header.h"
+#define FILENAME "tasks.txt"
 
 
 int main(void) {
@@ -8,6 +9,8 @@ int main(void) {
 	int taskCount = 0;
 	int MenuInput;
 	int validInput;
+
+	ReadTaskListFromFile(&tasks, FILENAME);
 
 	do {
 		DisplayMenu();
@@ -52,6 +55,7 @@ int main(void) {
 		case EXIT:
 
 			printf("Quitting the program");
+			WriteTaskListToFile(tasks, FILENAME);
 			for (int i = 0; i < taskCount; i++) {
 				free(tasks[i]);
 			}
