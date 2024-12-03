@@ -190,7 +190,7 @@ void DisplayByRange(const TASK* tasks) {
             printf("The task doesn't exist.\n");
             return;
         }
-        //If tasks exist,print the title "Month", "Day", "Name", "Description" first.
+        //If tasks exist,print the title first.
         printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
         //Then use loop to print every task between the two dates,just like the single one.
         for (i = 0; i < tasks->data->id; i++) {
