@@ -240,33 +240,72 @@ void SearchTask(const TASK* tasks) {
         tasks->data[temp].description);
 }
 
-bool WriteTaskToFile(INFO t, char* filename) {
+
+bool WriteTagToFile(INFO t, FILE* fp) {
+    switch (t.tag) {        // tag        
+    case Jan:   fprintf(fp, "Jan\n");
+        break;
+    case Feb:   fprintf(fp, "Feb\n");
+        break;
+    case Mar:   fprintf(fp, "Mar\n");
+        break;
+    case Apr:   fprintf(fp, "Apr\n");
+        break;
+    case May:   fprintf(fp, "May\n");
+        break;
+    case Jun:   fprintf(fp, "Jun\n");
+        break;
+    case Jul:   fprintf(fp, "Jul\n");
+        break;
+    case Aug:   fprintf(fp, "Aug\n");
+        break;
+    case Sep:   fprintf(fp, "Sep\n"); 
+        break;
+    case Oct:   fprintf(fp, "Oct\n"); 
+        break;
+    case Nov:   fprintf(fp, "Nov\n"); 
+        break;
+    case Dec:   fprintf(fp, "Dec\n"); 
+        break;
+    default:    fprintf(stderr, "unknown Tag\n");
+        break; return false;
+    }
+    return true;
+}
+
+int ReadTagFromFile(FILE* fp) {
+
+
+
+    return true;
+}
+
+WriteTaskListToFile(TASK t, char* filename) {
     FILE* fp = fopen(filename, "w"); //writing to file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
-    fprintf(fp, "%d\n", t.id);  //id#
-
-    //TODO: make WriteTagToFile()/ReadTagFromFile()
-    switch (t.tag) {        // tag        
-    case Dec:   fprintf(fp, "Dec\n");    // placeholders untill Types of tags are defined
-                break;
-    case Jan:   fprintf(fp, "Jan\n");
-                break;
-    default:    fprintf(stderr, "unknown Tag\n");
-                break; // return false
+    for (int i = 0; i < MAX_TASKS; i++) {
+        if (t.data[i].name == NULL) {
+            return true;
+        }
+        WriteTaskToFile(t.data[i], fp);
     }
+}
+
+bool WriteTaskToFile(INFO t, FILE* fp) {
+    fprintf(fp, "%d\n", t.id);              //id#
+    WriteTagToFile(t, fp);                  // tag
     
-   
-    fprintf(fp, "%s\n", t.name);     // name
+    fprintf(fp, "%s\n", t.name);            // name
     fprintf(fp, "%s\n", t.description);     // description
 
     fclose(fp);
     return true;
 }
 
-
+// TODO: finish this
 bool ReadTaskFromFile(INFO* t, char* filename) {
     FILE* fp = fopen(filename, "r");    // read from file
     if (fp == NULL) {
@@ -281,9 +320,11 @@ bool ReadTaskFromFile(INFO* t, char* filename) {
         fprintf(stderr, "error, not able to read task id# from file\n");
         exit(EXIT_FAILURE);
     }
+    // TODO: Store Id in Struct
 
     // TAG
-    // ReadTagFromFile()
+    int tagNum = ReadTagFromFile(fp);
+    t.tag = (TAG)tagNum;
 
     // name
     char tmpName[NAME_LENGTH] = { 0 };
@@ -293,7 +334,7 @@ bool ReadTaskFromFile(INFO* t, char* filename) {
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpName);
-    strncpy(t->name, tmpName, NAME_LENGTH);
+    strncpy(t->data->name, tmpName, NAME_LENGTH);
     
 
     // description
@@ -304,7 +345,7 @@ bool ReadTaskFromFile(INFO* t, char* filename) {
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpDesc);
-    strncpy(t->name, tmpDesc, NAME_LENGTH);
+    strncpy(t->data->description, tmpDesc, NAME_LENGTH);
 
     fclose(fp);
     return true;

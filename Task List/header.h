@@ -45,7 +45,7 @@ typedef struct Info {										// instead of searching by month or day we can se
 
 //And one struct for task id of the information.
 typedef struct TASK {
-	int id;
+	//int id;
 	INFO* data;
 }TASK, * PTTASK;
 
@@ -63,6 +63,9 @@ void DisplayAll(const TASK* tasks);
 void SearchTask(const TASK* tasks);
 
 //Save/Read from disk
+bool WriteTagToFile(INFO t, FILE* fp);
+int ReadTagFromFile(FILE* fp);
+
 bool WriteTaskToFile(INFO t, char* filename);
 bool ReadTaskFromFile(INFO* t, char* filename);
 
