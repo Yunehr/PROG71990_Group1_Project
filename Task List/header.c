@@ -14,27 +14,28 @@ void DisplayMenu(void) {
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
-void AddTask(TASK tasks[], int* taskCount) {
+void AddTask(TASK* tasks, int* taskCount) {
     if (*taskCount >= MAX_TASKS) { //checks we did not create too many tasks
         printf("Task list is full, cannot add more tasks \n");
         return;
     }
-    PTTASK newTask = (PTTASK)malloc(sizeof(TASK));
+    TASK* newTask = (TASK*)malloc(sizeof(TASK));
     if (!newTask) {
         printf("memory Allocation failed");
         return;
     }
+    //taskCount begins from 0. so Task id begins from 1.
     newTask->id = *taskCount + 1;
-
+    //newTask.data[i].name is the same as the original newTask[i].name  
     printf("Please enter task name: \n");
-    fgets(newTask->name, sizeof(newTask->name), stdin);
-    newTask->name[strcspn(newTask->name, "\n")] = '\0';
+    fgets(newTask->data[*taskCount].name, sizeof(newTask->data[*taskCount].name), stdin);
+    newTask->data[*taskCount].name[strcspn(newTask->data[*taskCount].name, "\n")] = '\0';
 
     printf("Please enter the task description: \n");
-    fgets(newTask->description, sizeof(newTask->description), stdin);
-    newTask->description[strcspn(newTask->description, "\n")] = '\0';
+    fgets(newTask->data[*taskCount].description, sizeof(newTask->data[*taskCount].description), stdin);
+    newTask->data[*taskCount].description[strcspn(newTask->data[*taskCount].description, "\n")] = '\0';
 
-    tasks[*taskCount] = newTask;
+    tasks = newTask;
     (*taskCount)++;
 
     //Need Save Function
@@ -42,7 +43,7 @@ void AddTask(TASK tasks[], int* taskCount) {
     printf("Task Added Successfully!\n");
 
 }
-void DeleteTask(PTTASK tasks[], int* taskCount) {    
+void DeleteTask(TASK* tasks, int* taskCount) {
     if (*taskCount == 0) {
         printf("There are no tasks to delete.\n");
         return;
@@ -51,24 +52,28 @@ void DeleteTask(PTTASK tasks[], int* taskCount) {
     printf("Please enter the task ID to delete:\n");
     scanf_s("%d", &id);
     int found = 0;
-    for (int i = 0; i < *taskCount; ++i) {
-        if (tasks[i]->id == id) {
-            free(tasks[i]);
-            for (int j = i; j < *taskCount - 1; ++j) {
-                tasks[j] = tasks[j + 1];
+    //No need of this first loop,just find tasks->id == id is OK.If found,found = 1.
+    //for (int i = 0; i < *taskCount; ++i) {
+        if (tasks->id == id) {
+            //id of tasks[0] = 1, so tasks + id -1 point to the address of id.
+            free(tasks + id - 1);
+            //Like delete id = 5,we need to delete task[4],then we put task[4] = empty. copy task[5] as task[4]
+            //so we begin from id - 1,finished in front of *taskCount - 1 is good,because there's not copy for the last one.
+            for (int j = id - 1; j < *taskCount - 1; ++j) {
+                tasks->data[j] = tasks->data[j + 1];
             }
-            tasks[*taskCount - 1] = NULL;
+            &tasks->data[*taskCount - 1] == NULL;
             (*taskCount)--;
             found = 1;
             printf("Task Deleted Successfully!\n");
-            break;
+        /*    break;*/
         }
-    }
+    
     if (!found) {
         printf("Task not found.\n");
     }
 } // Needs a save function add
-void UpdateTask(PTTASK tasks[], int taskCount) {
+void UpdateTask(TASK* tasks, int taskCount) {
     if (taskCount == 0) {
         printf("There are no tasks to update.\n");
         return;
@@ -78,14 +83,15 @@ void UpdateTask(PTTASK tasks[], int taskCount) {
     scanf_s("%d", &id);
     int found = 0;
     for (int i = 0; i < taskCount; i++) {
-        if (tasks[i]->id == id) {
+        if (tasks->id == id) {
+            //newTask.data[i].name is the same as the original newTask[i].name .Same as the description.
             printf("Enter new task name:\n");
-            fgets(tasks[i]->name, sizeof(tasks[i]->name), stdin);
-            tasks[i]->name[strcspn(tasks[i]->name, "\n")] = '\0';
+            fgets(tasks->data[i].name, sizeof(tasks->data[i].name), stdin);
+            tasks->data[i].name[strcspn(tasks->data[i].name, "\n")] = '\0';
 
             printf("Enter new task description:\n");
-            fgets(tasks[i]->description, sizeof(tasks[i]->description), stdin);
-            tasks[i]->description[strcspn(tasks[i]->description, "\n")] = '\0';
+            fgets(tasks->data[i].description, sizeof(tasks->data[i].description), stdin);
+            tasks->data[i].description[strcspn(tasks->data[i].description, "\n")] = '\0';
 
             printf("Tasks updated successfully!\n");
             found = 1;

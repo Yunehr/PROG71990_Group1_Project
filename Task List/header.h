@@ -46,12 +46,12 @@ typedef struct Info {										// instead of searching by month or day we can se
 typedef struct TASK {
 	int id;
 	INFO* data;
-}TASK, * PTTASK;
+}TASK, * PTASK;
 
 void DisplayMenu(void);
-void AddTask(TASK* tasks);
-void DeleteTask(PTTASK tasks[], int* taskCount);
-void UpdateTask(PTTASK tasks[], int taskCount);
+void AddTask(TASK* tasks, int* taskCount);
+void DeleteTask(TASK* tasks, int* taskCount);
+void UpdateTask(TASK* tasks, int taskCount);
 
 //I create a function to search by date.
 int FindByName(TASK* tasks, char name[]);

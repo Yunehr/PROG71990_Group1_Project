@@ -4,7 +4,7 @@
 
 
 int main(void) {
-	PTTASK tasks[MAX_TASKS] = { NULL };
+	PTASK tasks[MAX_TASKS] = { NULL };
 	int taskCount = 0;
 	int MenuInput;
 	int validInput;
