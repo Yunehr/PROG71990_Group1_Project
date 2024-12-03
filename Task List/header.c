@@ -329,17 +329,17 @@ int ReadTagFromFile(FILE* fp) {
 
 
 
-bool WriteTaskListToFile(TASK t, char* filename) {
+bool WriteTaskListToFile(PTTASK t, char* filename) {
     FILE* fp = fopen(filename, "w"); //writing to file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
     for (int i = 0; i < MAX_TASKS; i++) {
-        if (t.data[i].name == NULL) {
+        if (t->data[i].name == NULL) {
             return true;
         }
-        WriteTaskToFile(t.data[i], fp);
+        WriteTaskToFile(t->data[i], fp);
     }
     fclose(fp);
     return true;
