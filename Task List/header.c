@@ -337,8 +337,11 @@ bool WriteTaskListToFile(PTTASK t, char* filename) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
+    if (t->data == NULL) {    // if there are no tasks, creates file with empty tasks
+        return true;
+    }
     for (int i = 0; i < MAX_TASKS; i++) {
-        if (t->data[i].name == NULL) {
+        if (t == NULL) {
             return true;
         }
         WriteTaskToFile(t->data[i], fp);
