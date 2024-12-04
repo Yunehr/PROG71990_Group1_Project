@@ -1,10 +1,10 @@
 #include "header.h"
-#include <stdio.h>
+//#include <stdio.h>
 #define FILENAME "tasks.txt"
 
 
 int main(void) {
-	PTTASK tasks[MAX_TASKS] = { NULL };
+	PTTASK tasks[MAX_TASKS] = { NULL }; // NULL is potentially causing errors in line 30
 	int taskCount = 0;
 	int MenuInput = 0;
 	// int validInput = 0;		// is this needed still???
@@ -27,7 +27,7 @@ int main(void) {
 		switch (MenuInput)
 		{
 		case ADD:
-			AddTask(&tasks);
+			AddTask(&tasks);	//TODO: verify if tasks.data == NULL or initialize  to zero when tasks is created
 			break;
 		case DELETE:
 			DeleteTask(&tasks);
