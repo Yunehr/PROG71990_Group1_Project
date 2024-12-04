@@ -22,12 +22,7 @@ enum Options {
 	SEARCH
 };
 
-//Set a const char for print the name of Month of the tag.
-const char* monthNames[] = {
-	//Set Invalid for monthNames[0], and others as 1 2 3 4.....
-	"Invalid",
-	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
-};
+
 
 //an enum for transit abbr. of months to int.
 typedef enum Months {	// tag
@@ -35,12 +30,12 @@ typedef enum Months {	// tag
 	Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
 }MONTHS, TAG;
 
-//I create one struct for task informations.				// we do not need multiple task lists **yet** so no need for 2 structs, we can combine their ideas in an overall update
-typedef struct Info {										// instead of searching by month or day we can search by id# and maybe display by tag type (important, not important, food, housework, school, etc...)
-	TAG tag;												//				- the tag could be an enum, and used to display a range of tasks instead of months
-	int id;												//				- the id# an be used for displaying a single task
+//I create one struct for task informations.				
+typedef struct Info {										
+	TAG tag;												
+	int id;
 	char name[NAME_LENGTH];
-	char description[MAX_LENGTH];							// doing what is said above will make storing and reading the tasks easier since we can just save upon exiting the program, and load upon launching program
+	char description[MAX_LENGTH];							
 }INFO, * PINFO;
 
 //And one struct for task id of the information.

@@ -14,10 +14,18 @@ void DisplayMenu(void) {
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
+
+//Set a const char for print the name of Month of the tag.
+const char* monthNames[] = {
+    //Set Invalid for monthNames[0], and others as 1 2 3 4.....
+    "Invalid",
+    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+};
+
 void AddTask(TASK* tasks) {
     int currentId = 0;
     // Find highest existing ID
-    for (int i = 0; i < MAX_TASKS; i++) {
+    for (int i = 0; i < MAX_TASKS; i++) {   
         if (tasks->data[i].id > currentId) {
             currentId = tasks->data[i].id;
         }
@@ -53,7 +61,7 @@ void AddTask(TASK* tasks) {
         printf("Error opening file\n");
         return;
     }
-    WriteTaskToFile(newTask, fp);
+    //WriteTaskToFile(newTask, fp);
     fclose(fp);
 }
 void DeleteTask(TASK* tasks) {    
@@ -71,7 +79,7 @@ void DeleteTask(TASK* tasks) {
             memset(tasks->data[i].name, 0, NAME_LENGTH);
             memset(tasks->data[i].description, 0, MAX_LENGTH);
 
-            WriteTaskListToFile(*tasks, "tasks.txt");
+            //WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task deleted\n");
             return;
         }
@@ -107,7 +115,7 @@ void UpdateTask(TASK* tasks) {
             }
             tasks->data[i].tag = (TAG)tagNum;
 
-            WriteTaskListToFile(*tasks, "tasks.txt");
+            //WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task updated\n");
             return;
         }
@@ -354,7 +362,7 @@ bool ReadTaskListFromFile(TASK* t, char* filename) {
         return false;
     }
     for (int i = 0; i < MAX_TASKS; i++) {   // TODO: check for end of file
-        t->data[i] = ReadTaskFromFile(fp);
+        t->data[i] = ReadTaskFromFile(fp);  //TODO: if file is empty, return true
     }
     fclose(fp);
     return true;
@@ -370,6 +378,7 @@ INFO ReadTaskFromFile(FILE * fp) {
     int numResult = fscanf(fp, "%d", &id);
     if (numResult != 1) {
         fprintf(stderr, "error, not able to read task id# from file\n");
+        fclose(fp);
         exit(EXIT_FAILURE);
     }
     newTask.id = id;
@@ -383,6 +392,7 @@ INFO ReadTaskFromFile(FILE * fp) {
     char* nameResult = fgets(tmpName, NAME_LENGTH, fp);
     if (nameResult == NULL) {
         fprintf(stderr, "error, not able to read name from file\n");
+        fclose(fp);
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpName);
@@ -393,7 +403,8 @@ INFO ReadTaskFromFile(FILE * fp) {
     char tmpDesc[NAME_LENGTH] = { 0 };
     char* descResult = fgets(tmpDesc, NAME_LENGTH, fp);
     if (descResult == NULL) {
-        fprintf(stderr, "error, not able to read name from file\n");
+        fprintf(stderr, "error, not able to read Description from file\n");
+        fclose(fp);
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpDesc);
