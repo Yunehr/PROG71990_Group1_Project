@@ -22,3 +22,33 @@ Goal: Create a Task List that includes the following features
 Progress tracking will be done using "issues" in GitHub.
 However, each major update will be mentioned in this file (including who worked on what)
 
+DEV 1.0.0
+- New Features
+  - Main Menu    (Leanne)
+  - Add Task     (Leanne)
+  - Delete Task  (Leanne)
+  - Update Task  (Leanne)
+
+DEV 1.1.0
+- New Features
+  - Display Single Task      (Luis)
+  - Display All Tasks        (Luis)
+  - Display Range of Tasks   (Luis)
+  - Search for Task          (Luis)
+
+DEV 2.0.0
+- Updates
+  - changed task storage method to better reflect goals (Group Consensus)
+- New Features
+  - Write Task List to File     (Ryan)
+  - Read Task List From File    (Ryan)
+ 
+DEV 2.1.0
+- Updates
+  - Add, Delete, and Update Functions changed to match the new method in DEV Update 2.0.0
+        - (Leanne)
+  - Included Read & Write Functions in main.c (filename: tasks.txt) (Ryan)
+  - Display & Search Features updated to reflect struct changes (Luis)
+  - Updated Functionality of Read & Write to File Features (Ryan)
+ 
+
