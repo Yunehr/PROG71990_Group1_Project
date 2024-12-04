@@ -9,8 +9,9 @@ int main(void) {
 	int MenuInput = 0;
 	// int validInput = 0;		// is this needed still???
 
-	if (!ReadTaskListFromFile(&tasks, FILENAME)) {
-		WriteTaskListToFile(tasks, FILENAME);
+	bool Check = ReadTaskListFromFile(&tasks, FILENAME);
+	if (Check == false) {
+		ReadTaskListFromFile(&tasks, FILENAME);
 	}
 
 	do {

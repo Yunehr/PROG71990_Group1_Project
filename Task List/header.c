@@ -123,6 +123,20 @@ void UpdateTask(TASK* tasks) {
     printf("Task not found\n");
 }
 
+//Initializes a fake task
+INFO CreateVoidTask(INFO t) {
+    //INFO tempTask = { 0 }; 
+    //tempTask.id = 0; 
+    //tempTask.tag = Jan; 
+    //strncpy(tempTask.name, "Task Name", NAME_LENGTH);;
+    //strncpy(tempTask.description, "Task description", MAX_LENGTH);
+    t.id = 0;
+    t.tag = Jan;
+    strncpy(t.name, "Task Name", NAME_LENGTH);;
+    strncpy(t.description, "Task description", MAX_LENGTH);
+    return t;
+}
+
 //Use char name[] to compare with tasks->data[i].name through strcmp,if found, return int i.
 //First I used this function in order to display single task.
 //But I found if we add dates of the calender,using date is much more make sense.
@@ -281,12 +295,13 @@ bool WriteTagToFile(INFO t, FILE* fp) {
 }
 
 int ReadTagFromFile(FILE* fp) {
-    char type[MAX_TAG_LENGTH] = { 0 };
+    char type[MAX_TAG_LENGTH] = { "" };
     char* result = fgets(type, MAX_TAG_LENGTH, fp);
     if (result == NULL) {  // bad things happened
         fprintf(stderr, "error, not able to read type from file\n");
         exit(EXIT_FAILURE);
     }
+    CleanNewLineFromString(type);
     if (strncmp(type, "Jan", strlen("Jan")) == 0) {
         return Jan;
     }
@@ -337,7 +352,8 @@ bool WriteTaskListToFile(PTTASK t, char* filename) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
-    if (t->data == NULL) {    // if there are no tasks, creates file with empty tasks
+    if (t->data == NULL) {    //if there are no tasks, creates file with empty tasks
+        //t->data[0].id = 0;      // initializing to zero, not magic number
         return true;
     }
     for (int i = 0; i < MAX_TASKS; i++) {
@@ -362,10 +378,20 @@ bool ReadTaskListFromFile(TASK* t, char* filename) {
     FILE* fp = fopen(filename, "r");    // read from file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
+        //fclose(fp);
+        FILE* nfp = fopen(filename, "w"); //writing to file
+        if (nfp == NULL) {
+            fprintf(stderr, "error, not able to open file for writing\n");
+            return false;
+        }
+        INFO InitialTask = { 0 };
+        InitialTask = CreateVoidTask(InitialTask);
+        WriteTaskToFile(InitialTask, nfp);
+        fclose(nfp);
         return false;
     }
-    for (int i = 0; i < MAX_TASKS; i++) {   // TODO: check for end of file
-        t->data[i] = ReadTaskFromFile(fp);  //TODO: if file is empty, return true
+    for (int i = 0; i < MAX_TASKS; i++) {   
+        t->data[i] = ReadTaskFromFile(fp);
     }
     fclose(fp);
     return true;
@@ -375,20 +401,21 @@ bool ReadTaskListFromFile(TASK* t, char* filename) {
 INFO ReadTaskFromFile(FILE * fp) {
     
     
-    INFO newTask = { 0 }; 
+    INFO tempTask = { 0 }; 
+
     // id#
     int id = 0; // initialize to 0 to be safe
-    int numResult = fscanf(fp, "%d", &id);
+    int numResult = fscanf(fp, "%d\n", &id);
     if (numResult != 1) {
         fprintf(stderr, "error, not able to read task id# from file\n");
         fclose(fp);
         exit(EXIT_FAILURE);
     }
-    newTask.id = id;
+    tempTask.id = id;
    
     // TAG
     int tagNum = ReadTagFromFile(fp);
-    (newTask.tag) = (TAG)tagNum;
+    (tempTask.tag) = (TAG)tagNum;
 
     // name
     char tmpName[NAME_LENGTH] = { 0 };
@@ -399,7 +426,7 @@ INFO ReadTaskFromFile(FILE * fp) {
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpName);
-    strncpy(newTask.name, tmpName, NAME_LENGTH);
+    strncpy(tempTask.name, tmpName, NAME_LENGTH);
     
 
     // description
@@ -411,7 +438,7 @@ INFO ReadTaskFromFile(FILE * fp) {
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpDesc);
-    strncpy(newTask.description, tmpDesc, NAME_LENGTH);
+    strncpy(tempTask.description, tmpDesc, NAME_LENGTH);
 
-    return newTask;
+    return tempTask;
 }

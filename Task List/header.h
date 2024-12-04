@@ -48,6 +48,8 @@ void DisplayMenu(void);
 void AddTask(TASK* tasks);
 void DeleteTask(TASK* tasks);
 void UpdateTask(TASK* tasks);
+
+INFO CreateVoidTask(INFO t);
 //I create a function to search by date.
 int FindByName(TASK* tasks, char name[]);
 //Because this functions are display and search only, so I use const to avoid the content to be modified.
