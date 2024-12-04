@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include "utils.h"
 #include <stdio.h>
 #include <string.h>
@@ -20,20 +21,18 @@ enum Options {
 	DISPLAYALL,
 	SEARCH
 };
+
+//Set a const char for print the name of Month of the tag.
+const char* monthNames[] = {
+	//Set Invalid for monthNames[0], and others as 1 2 3 4.....
+	"Invalid",
+	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+};
+
 //an enum for transit abbr. of months to int.
 typedef enum Months {	// tag
 	Jan = 1,
-	Feb,
-	Mar,
-	Apr,
-	May,
-	Jun,
-	Jul,
-	Aug,
-	Sep,
-	Oct,
-	Nov,
-	Dec
+	Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
 }MONTHS, TAG;
 
 //I create one struct for task informations.				// we do not need multiple task lists **yet** so no need for 2 structs, we can combine their ideas in an overall update
