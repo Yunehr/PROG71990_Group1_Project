@@ -53,7 +53,7 @@ void AddTask(TASK* tasks) {
         printf("Error opening file\n");
         return;
     }
-    WriteTaskToFile(newTask, fp);
+    //WriteTaskToFile(newTask, fp);
     fclose(fp);
 }
 void DeleteTask(TASK* tasks) {    
@@ -71,7 +71,7 @@ void DeleteTask(TASK* tasks) {
             memset(tasks->data[i].name, 0, NAME_LENGTH);
             memset(tasks->data[i].description, 0, MAX_LENGTH);
 
-            WriteTaskListToFile(*tasks, "tasks.txt");
+            //WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task deleted\n");
             return;
         }
@@ -107,7 +107,7 @@ void UpdateTask(TASK* tasks) {
             }
             tasks->data[i].tag = (TAG)tagNum;
 
-            WriteTaskListToFile(*tasks, "tasks.txt");
+            //WriteTaskListToFile(*tasks, "tasks.txt");
             printf("Task updated\n");
             return;
         }

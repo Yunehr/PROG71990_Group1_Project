@@ -1,14 +1,13 @@
-
-#include <stdio.h>
 #include "header.h"
+#include <stdio.h>
 #define FILENAME "tasks.txt"
 
 
 int main(void) {
 	PTTASK tasks[MAX_TASKS] = { NULL };
 	int taskCount = 0;
-	int MenuInput;
-	int validInput;
+	int MenuInput = 0;
+	// int validInput = 0;		// is this needed still???
 
 	ReadTaskListFromFile(&tasks, FILENAME);
 
