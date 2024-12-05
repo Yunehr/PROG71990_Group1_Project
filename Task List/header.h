@@ -31,22 +31,22 @@ typedef enum Months {	// tag
 }MONTHS, TAG;
 
 //I create one struct for task informations.				
-typedef struct Info {										
-	TAG tag;												
+typedef struct Info {
 	int id;
+	TAG tag;
 	char name[NAME_LENGTH];
-	char description[MAX_LENGTH];							
-}INFO, * PINFO;
+	char description[MAX_LENGTH];
+} INFO, *PINFO;
 
 //And one struct for task id of the information.
-typedef struct TASK {
-	//int id;
-	INFO* data;
-}TASK, * PTTASK;
+typedef struct Task {
+	INFO data[MAX_TASKS];
+	int count;
+} TASK, *PTTASK;
 
 void DisplayMenu(void);
-void AddTask(TASK* tasks);
-void DeleteTask(TASK* tasks);
+bool AddTask(TASK* tasks);
+bool DeleteTask(TASK* tasks);
 void UpdateTask(TASK* tasks);
 
 INFO CreateVoidTask(INFO t);
