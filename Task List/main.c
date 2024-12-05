@@ -1,23 +1,15 @@
 #include "header.h"
-//#include <stdio.h>
-#define FILENAME "tasks.txt"
-
+#define _CRT_SECURE_NO_WARNINGS
 
 int main(void) {
-	PTTASK tasks[MAX_TASKS] = { NULL }; // NULL is potentially causing errors in line 30
-	int taskCount = 0;
+	TASK tasks;
 	int MenuInput = 0;
-	// int validInput = 0;		// is this needed still???
-
-	bool Check = ReadTaskListFromFile(&tasks, FILENAME);
-	if (Check == false) {
-		ReadTaskListFromFile(&tasks, FILENAME);
-	}
-
+	InitiateTask(&tasks);
 	do {
 		DisplayMenu();
 		//If Menuinput = 0 loop will end, so this would be fine.
-		scanf_s("%d", &MenuInput);
+		printf("Please choose:");
+		scanf("%d", &MenuInput);
 
 		//if (validInput != 1) {
 		//	while (getchar() != '\n');
@@ -30,7 +22,7 @@ int main(void) {
 		switch (MenuInput)
 		{
 		case ADD:
-			AddTask(&tasks);	//TODO: verify if tasks.data == NULL or initialize  to zero when tasks is created
+			AddTask(&tasks);
 			break;
 		case DELETE:
 			DeleteTask(&tasks);
@@ -55,15 +47,11 @@ int main(void) {
 			SearchTask(&tasks);
 			break;
 		case EXIT:
-
-			printf("Quitting the program");
-			WriteTaskListToFile(tasks, FILENAME);
-			for (int i = 0; i < taskCount; i++) {
-				free(tasks[i]);
-			}
+			SaveTask(&tasks);
+			DestroyTask(&tasks);
 			break;
 		default:
-			printf("Invalid input please try again");
+			printf("Invalid input please input again");
 			break;
 		}
 	} while (MenuInput);

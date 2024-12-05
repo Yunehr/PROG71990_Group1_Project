@@ -1,92 +1,160 @@
 #include "header.h"
-
+#define _CRT_SECURE_NO_WARNINGS
 
 void DisplayMenu(void) {
+    printf("To choose a function, enter its number:                \n");
+    printf("1) Add a new task                                      \n");
+    printf("2) Delete an existing task                             \n");
+    printf("3) Update an exsisting task                            \n");
+    printf("4) Display a single task                               \n");
+    printf("5) Display a range of tasks                            \n");
+    printf("6) Display all tasks                                   \n");
+    printf("7) Search for a task                                   \n");
+    printf("0) Quit                                                \n\n");
 
-    printf("_________________________________________________________\n");
-    printf("|To choose a function, enter its number:                |\n");
-    printf("|1) Add a new task                                      |\n");
-    printf("|2) Delete an existing task                             |\n");
-    printf("|3) Update an exsisting task                            |\n");
-    printf("|4) Display a single task                               |\n");
-    printf("|5) Display a range of tasks                            |\n");
-    printf("|6) Search for a task                                   |\n");
-    printf("|0) Quit                                                |\n");
-    printf("_________________________________________________________\n");
 }
 
-//Set a const char for print the name of Month of the tag.
-const char* monthNames[] = {
-    //Set Invalid for monthNames[0], and others as 1 2 3 4.....
-    "Invalid",
-    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
-};
-
-void AddTask(TASK* tasks) {
-    int currentId = 0;
-    // Find highest existing ID
-    for (int i = 0; i < MAX_TASKS; i++) {   
-        if (tasks->data[i].id > currentId) {
-            currentId = tasks->data[i].id;
-        }
+void InitiateTask(TASK* tasks) {
+    //void *malloc(size_t size);
+    (INFO*)tasks->data = (INFO*)malloc(DEFAULT_TASKS * sizeof(INFO));
+    if (tasks->data == NULL) {
+        printf("memory Allocation failed");
+        exit(EXIT_FAILURE);
     }
-
-    INFO newTask = { 0 };
-    newTask.id = currentId + 1;
-
-    printf("Enter Task name:\n");
-    scanf(" %[^\n]", newTask.name);
-
-    printf("Enter task description: ");
-    scanf(" %[^\n]", newTask.description);
-
-    printf("Enter task tag (1-12 for months): ");
-    
-    int tagNum;
-    scanf("%d", &tagNum);
-    if (tagNum < 1 || tagNum > 12) {
-        printf("Invalid month number\n");
-        return;
+    tasks->id = 0;
+    tasks->capacity = DEFAULT_TASKS;
+    LoadTask(tasks);
+}
+    fgets(newTask->data[*taskCount].name, sizeof(newTask->data[*taskCount].name), stdin);
+void LoadTask(TASK* tasks) {
+    FILE* fp = fopen("tasks.dat", "r");
+    if (fp == NULL) {
+        fprintf(stderr, "error, not able to open file for reading.\n");
+        exit(EXIT_FAILURE);
     }
-    newTask.tag = (TAG)tagNum;
-    for (int i = 0; i < MAX_TASKS; i++) {
-        if (tasks->data[i].id == 0) {
-            tasks->data[i] = newTask;
-            break;
-        }
+    //set a temporary tmp to get content from file.
+    INFO tmp = { 0 };
+    //fread(void *buffer,size_t size,size_t count,FILE* stream);
+    //so destination is tmp,size is the size of struct,use loop to get 1 every time,from fp.
+    while (fread(&tmp, sizeof(INFO), 1, fp)) {
+        //Every time read one task from file,to check if capacity increasing is required.
+        CheckCapacity(tasks);
+        tasks->data[tasks->id] = tmp;
+        tasks->id++;
     }
-
-    FILE* fp = fopen("tasks.txt", "a");
-    if (!fp) {
-        printf("Error opening file\n");
-        return;
-    }
-    //WriteTaskToFile(newTask, fp);
+    //when closed file to put fp = NULL to avoid Dangling/Wild Pointer.
     fclose(fp);
+    fp = NULL;
 }
-void DeleteTask(TASK* tasks) {    
-    if (!tasks->data) {
-        printf("No tasks to delete\n");
-        return;
-    }
-    int id;
-    printf("Enter task ID to delete: ");
-    scanf("%d", &id);
-
-    for (int i = 0; i < MAX_TASKS; i++) {
-        if (tasks->data[i].id == id) {
-            tasks->data[i].id = 0;
-            memset(tasks->data[i].name, 0, NAME_LENGTH);
-            memset(tasks->data[i].description, 0, MAX_LENGTH);
-
-            //WriteTaskListToFile(*tasks, "tasks.txt");
-            printf("Task deleted\n");
+    fgets(newTask->data[*taskCount].description, sizeof(newTask->data[*taskCount].description), stdin);
+void CheckCapacity(TASK* tasks) {
+    if (tasks->id == tasks->capacity) {
+        //void *realloc(void* memblock,size_t size);
+        //when num of id reach the capacity
+        INFO* ptr = (INFO*)realloc(tasks->data,(tasks->capacity + INC_TASKS) * sizeof(INFO));
+        if (ptr != NULL) {
+            //point date to ptr,then at last just free data.
+            tasks->data = ptr;
+            //capacity increased.
+            tasks->capacity += INC_TASKS;
+            printf("Add memory success.\n");
+        }
+        else {
+            fprintf(stderr, "Error, not able to allocate memory.");
             return;
         }
     }
-    printf("Task not found\n");
 }
 
+void AddTask(TASK* tasks) {
+    if (tasks->id == tasks->capacity) {
+        //void *realloc(void* memblock,size_t size);
+        //when num of id reach the capacity
+        INFO* ptr = (INFO*)realloc(tasks->data, (tasks->capacity + INC_TASKS) * sizeof(INFO));
+        if (ptr != NULL) {
+            tasks->data = ptr;
+            tasks->capacity += INC_TASKS;
+            printf("Add memory success.\n");
+        }
+        }
+    //get the user input to the data
+    printf("Please enter task month: \n");
+    scanf("%d", &(tasks->data[tasks->id].month));
+    printf("Please enter task day: \n");
+    scanf("%d", &(tasks->data[tasks->id].day));
+    printf("Please enter task name: \n");
+    scanf("%s", tasks->data[tasks->id].name);
+    printf("Please enter the task description: \n");
+    scanf("%s", tasks->data[tasks->id].description);
+    //when get all informations, id++.
+    tasks->id++;
+    int id;
+    //Need Save Function(Save function could be used at the exit time.)
+    printf("Task Added Successfully!\n");
+}
+    for (int i = 0; i < taskCount; i++) {
+void DeleteTask(TASK* tasks) {
+    if (tasks->id == 0) {
+        printf("There are no tasks to delete.\n");
+        return;
+    }
+    char name[NAME_LENGTH] = { 0 };
+    printf("Please enter the task name to delete:\n");
+    scanf("%s", name);
+    //If FindByName didn't find the task name,return EOF as -1.so when EOF,return.
+    int pos = FindByName(tasks, name);
+    if (pos = EOF) {
+        printf("The person doesn't exist.\n");
+        return;
+    }
+    int i = 0;
+    for (i = pos; i < tasks->id - 1; i++) {
+        tasks->data[i] = tasks->data[i + 1];
+            tasks->data[i].name[strcspn(tasks->data[i].name, "\n")] = '\0';
+    tasks->id--;
+    printf("Task Deleted Successfully!\n");
+} 
+            tasks->data[i].description[strcspn(tasks->data[i].description, "\n")] = '\0';
+    for (int i = 0; i < taskCount; i++) {
+            printf("Tasks updated successfully!\n");
+            found = 1;
+            break;
+        }
+            tasks->data[i].name[strcspn(tasks->data[i].name, "\n")] = '\0';
+    if (!found) {
+        printf("Task ID not found.\n");
+    }
+            tasks->data[i].description[strcspn(tasks->data[i].description, "\n")] = '\0';
+
+            printf("Tasks updated successfully!\n");
+            found = 1;
+            break;
+        }
+    }
+    if (!found) {
+        printf("Task ID not found.\n");
+    }
+
+void UpdateTask(TASK* tasks) {
+    char name[NAME_LENGTH] = { 0 };
+    printf("Please enter the task name to update:\n");
+    scanf("%s", name);
+    int pos = FindByName(tasks, name);
+    //If not found,print and return.
+    if (pos = EOF) {
+        printf("The person doesn't exist.\n");
+        return;
+    }
+    //If found,ask user input to update all of the information like in the ADD function.
+    //Because found pos,so change the data[id] to data[pos].
+    printf("Please enter task month: \n");
+    scanf("%d", &(tasks->data[pos].month));
+    printf("Please enter task day: \n");
+    scanf("%d", &(tasks->data[pos].day));
+    printf("Please enter task name: \n");
+    scanf("%s", tasks->data[pos].name);
+    printf("Please enter the task description: \n");
+    scanf("%s", tasks->data[pos].description);
 
 void UpdateTask(TASK* tasks) {
     if (!tasks->data) {
@@ -157,71 +225,76 @@ void DisplaySingle(const TASK* tasks) {
     int id = 0;
     printf("Pleast input the id of the task you want to search:\n");
     scanf("%d", &id);
-    //search the data to find the task in the same date.
-    int i = 0;
-    int found = 0;
-    for (i = 0; i < tasks->data->id; i++) {
-        //Check if a task exists for a specified date
-        if (tasks->data[i].id == id) {
+    for (i = 0; i < tasks->id; i++) {
+        if (tasks->data[i].month == month &&
+            tasks->data[i].day == day) {
+            printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                &(tasks->data[i].month),
+                &(tasks->data[i].day),
             found = 1;
             //If found one,break and go to the next step.
             break;
         }
-        //If not found,the value of found is the initial 0,so use the !found to print and return.
-        if (!found) {
-            printf("The task doesn't exist.\n");
-            return;
-        }
-    }
-    //If tasks exist,print the title "ID", "Tag", "Name", "Description" first.
-    //\t means one press of Tab.
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-    //Then use loop to print every task in the specific date, because there maybe not only one task in single date.
-    for (i = 0; i < tasks->data->id; i++) {
-        if (tasks->data[i].id == id) {
-            printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-                tasks->data[i].id,
-                //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
-                monthNames[tasks->data[i].tag],
-                tasks->data[i].name,
-                tasks->data[i].description);
-        }
-    }
-}
+    for (i = 0; i < tasks->id; i++) {
+        if (tasks->data[i].month == month &&
+            tasks->data[i].day == day) {
+            printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                tasks->data[i].month,
+                tasks->data[i].day,
+    int daytwo = 0;
+    printf("Pleast input the started month of the date you want to search:\n");
+    scanf("%d", &monthone);
+    printf("Pleast input the day of the started month you want to search:\n");
+    scanf("%d", &dayone);
+    printf("Pleast input the ended month of the date you want to search:\n");
+    scanf("%d", &monthtwo);
+    printf("Pleast input the day of the ended month you want to search:\n");
+    scanf("%d", &daytwo);
+        if (tasks->data[i].month == month &&
+            tasks->data[i].day == day) {
+            printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                tasks->data[i].month,
+                tasks->data[i].day,
+    int daytwo = 0;
+    printf("Pleast input the start date you want to search(Use format like 12.12):\n");
+    scanf("%d.%d", &monthone,&dayone);
+    printf("Pleast input the end date you want to search(Use format like 12.12):\n");
+    scanf("%d.%d", &monthtwo, &daytwo);
 
 void DisplayByRange(const TASK* tasks) {
     //Set four ints to search
     int monthone = 0;
     int monthtwo = 0;
-    printf("Pleast input the start month you want to search(Use format like 12 or Dec):\n");
-    scanf("%d", &monthone);
-    printf("Pleast input the end month you want to search(Use format like 12 or Dec):\n");
-    scanf("%d", &monthtwo);
-    int i = 0;
-    int found = 0;
-    for (i = 0; i < tasks->data->id; i++) {
-        //Check if a task exists in the range of two dates.
-        if (tasks->data[i].tag >= monthone &&
+    int daytwo = 0;
+    printf("Pleast input the start date you want to search(Use format like 12.12):\n");
+        for (i = 0; i < tasks->id; i++) {
+            if ((tasks->data[i].month > monthone ||
+                (tasks->data[i].month == monthone && tasks->data[i].day >= dayone)) &&
+                (tasks->data[i].month < monthtwo ||
+                (tasks->data[i].month == monthtwo && tasks->data[i].day <= daytwo))) {
+                printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                    &(tasks->data[i].month),
+                    &(tasks->data[i].day),
             tasks->data[i].tag <= monthtwo){
             found = 1;
-            //If found one,break and go to the next step.
-            break;
-        }
-        //If not found,the value of found is the initial 0,so use the !found to print and return.
-        if (!found) {
-            printf("The task doesn't exist.\n");
-            return;
-        }
-        //If tasks exist,print the title first.
+        for (i = 0; i < tasks->id; i++) {
+            if ((tasks->data[i].month > monthone ||
+                (tasks->data[i].month == monthone && tasks->data[i].day >= dayone)) &&
+                (tasks->data[i].month < monthtwo ||
+                (tasks->data[i].month == monthtwo && tasks->data[i].day <= daytwo))) {
+                printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                    tasks->data[i].month,
+                    tasks->data[i].day,
         printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
         //Then use loop to print every task between the two dates,just like the single one.
-        for (i = 0; i < tasks->data->id; i++) {
-            if (tasks->data[i].tag >= monthone &&
-                tasks->data[i].tag <= monthtwo) {
-                printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-                    tasks->data[i].id,
-                    //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
-                    monthNames[tasks->data[i].tag],
+        for (i = 0; i < tasks->id; i++) {
+            if ((tasks->data[i].month > monthone ||
+                (tasks->data[i].month == monthone && tasks->data[i].day >= dayone)) &&
+                (tasks->data[i].month < monthtwo ||
+                (tasks->data[i].month == monthtwo && tasks->data[i].day <= daytwo))) {
+                printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+                    tasks->data[i].month,
+                    tasks->data[i].day,
                     tasks->data[i].name,
                     tasks->data[i].description);
             }
@@ -233,30 +306,30 @@ void DisplayAll(const TASK* tasks) {
     printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
     int i = 0;
     for (i = 0; i < tasks->data->id; i++) {
-        printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-            tasks->data[i].id,
-            //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
-            monthNames[tasks->data[i].tag],
+    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+    printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+        &(tasks->data[temp].month),
+        &(tasks->data[temp].day),
             tasks->data[i].name,
             tasks->data[i].description);
     }
 }
 
 void SearchTask(const TASK* tasks) {
-    char name[NAME_LENGTH] = { 0 };
-    printf("Pleast input the task name you want to search:\n");
-    scanf("%s", name);
-    //Use the function FindByName to compare names in the data,put the int of return in the parameter temp.
+    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+    printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+        tasks->data[temp].month,
+        tasks->data[temp].day,
     int temp = FindByName(&tasks, name);
     if (temp == EOF) {
         printf("This task doesn't exist.\n");
         return;
     }
     //Print the title and the data found by FindByName.
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-        tasks->data[temp].id,
-        tasks->data[temp].tag,
+    printf("%-2s\t%-2s\t%-20s\t%-100s\n", "Month", "Day", "Name", "Description");
+    printf("%-2d\t%-2d\t%-20s\t%-100s\n",
+        tasks->data[temp].month,
+        tasks->data[temp].day,
         tasks->data[temp].name,
         tasks->data[temp].description);
 }
@@ -324,8 +397,9 @@ int ReadTagFromFile(FILE* fp) {
         return Jul;
     }
     else if (strncmp(type, "Aug", strlen("Aug")) == 0) {
-        return Aug;
-    }
+void SaveTask(TASK* tasks) {
+    //Just the same like LoadTask,so first copy the code.Change "r" to "w".
+    FILE* fp = fopen("tasks.dat", "w");
     else if (strncmp(type, "Sep", strlen("Sep")) == 0) {
         return Sep;
     }
@@ -334,111 +408,64 @@ int ReadTagFromFile(FILE* fp) {
     }
     else if (strncmp(type, "Nov", strlen("Nov")) == 0) {
         return Nov;
-    }
-    else if (strncmp(type, "Dec", strlen("Dec")) == 0) {
+bool WriteTaskListToFile(TASK t, char* filename) {
+    FILE* fp = fopen(filename, "w"); //writing to file
         return Dec;
-    }
-    else {
+    //when closed file to put fp = NULL to avoid Dangling/Wild Pointer.
         fprintf(stderr, "disaster!  exiting...\n");
         exit(EXIT_FAILURE);
     }
 }
+void DestroyTask(TASK* tasks) {
+    free(tasks->data);
+    //Same as open and close,put tasks->data = NULL to avoid Dangling/Wild Pointer.
+    tasks->data = NULL;
+    tasks->id = 0;
+    tasks->capacity = 0;
+}
 
-
-
-bool WriteTaskListToFile(PTTASK t, char* filename) {
-    FILE* fp = fopen(filename, "w"); //writing to file
+//bool WriteTaskListToFile(TASK t, char* filename) {
+//    FILE* fp = fopen(filename, "w"); //writing to file
+//    if (fp == NULL) {
+//        fprintf(stderr, "error, not able to open file for writing\n");
+//        return false;
+//    }
+//    // what do we want to write as identifiers/how are they stored
+//
+//    fclose(fp);
+//    return true;
+//}
+//
+//
+//bool ReadTaskListFromFile(TASK* t, char* filename) {
+//    FILE* fp = fopen(filename, "r");    // read from file
+//    if (fp == NULL) {
+//        fprintf(stderr, "error, not able to open file for writing\n");
+//        return false;
+//    }
+//
+//    //need to finish write file before continuing
+//
+//    fclose(fp);
+//    return true;
+//}
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
         return false;
     }
-    if (t->data == NULL) {    //if there are no tasks, creates file with empty tasks
-        //t->data[0].id = 0;      // initializing to zero, not magic number
-        return true;
-    }
-    for (int i = 0; i < MAX_TASKS; i++) {
-        if (t == NULL) {
-            return true;
-        }
-        WriteTaskToFile(t->data[i], fp);
-    }
+
+    //need to finish write file before continuing
+
     fclose(fp);
     return true;
 }
-
-bool WriteTaskToFile(INFO t, FILE* fp) {
-    fprintf(fp, "%d\n", t.id);              //id#
-    WriteTagToFile(t, fp);                  // tag
-    fprintf(fp, "%s\n", t.name);            // name
-    fprintf(fp, "%s\n", t.description);     // description
-    return true;
-}
-
-bool ReadTaskListFromFile(TASK* t, char* filename) {
-    FILE* fp = fopen(filename, "r");    // read from file
     if (fp == NULL) {
         fprintf(stderr, "error, not able to open file for writing\n");
-        //fclose(fp);
-        FILE* nfp = fopen(filename, "w"); //writing to file
-        if (nfp == NULL) {
-            fprintf(stderr, "error, not able to open file for writing\n");
-            return false;
-        }
-        INFO InitialTask = { 0 };
-        InitialTask = CreateVoidTask(InitialTask);
-        WriteTaskToFile(InitialTask, nfp);
-        fclose(nfp);
         return false;
     }
-    for (int i = 0; i < MAX_TASKS; i++) {   
-        t->data[i] = ReadTaskFromFile(fp);
-    }
+
+    //need to finish write file before continuing
+
     fclose(fp);
     return true;
-}
-
-// TODO: finish this
-INFO ReadTaskFromFile(FILE * fp) {
-    
-    
-    INFO tempTask = { 0 }; 
-
-    // id#
-    int id = 0; // initialize to 0 to be safe
-    int numResult = fscanf(fp, "%d\n", &id);
-    if (numResult != 1) {
-        fprintf(stderr, "error, not able to read task id# from file\n");
-        fclose(fp);
-        exit(EXIT_FAILURE);
-    }
-    tempTask.id = id;
-   
-    // TAG
-    int tagNum = ReadTagFromFile(fp);
-    (tempTask.tag) = (TAG)tagNum;
-
-    // name
-    char tmpName[NAME_LENGTH] = { 0 };
-    char* nameResult = fgets(tmpName, NAME_LENGTH, fp);
-    if (nameResult == NULL) {
-        fprintf(stderr, "error, not able to read name from file\n");
-        fclose(fp);
-        exit(EXIT_FAILURE);
-    }
-    CleanNewLineFromString(tmpName);
-    strncpy(tempTask.name, tmpName, NAME_LENGTH);
-    
-
-    // description
-    char tmpDesc[NAME_LENGTH] = { 0 };
-    char* descResult = fgets(tmpDesc, NAME_LENGTH, fp);
-    if (descResult == NULL) {
-        fprintf(stderr, "error, not able to read Description from file\n");
-        fclose(fp);
-        exit(EXIT_FAILURE);
-    }
-    CleanNewLineFromString(tmpDesc);
-    strncpy(tempTask.description, tmpDesc, NAME_LENGTH);
-
-    return tempTask;
 }
