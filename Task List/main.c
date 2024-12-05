@@ -29,32 +29,32 @@ int main(void) {
 		//}
 		switch (MenuInput)
 		{
-		case ADD:
+		case 1:
 			AddTask(&tasks);	//TODO: verify if tasks.data == NULL or initialize  to zero when tasks is created
 			break;
-		case DELETE:
+		case 2:
 			DeleteTask(&tasks);
 			break;
-		case UPDATE:
+		case 3:
 			UpdateTask(&tasks);
 			break;
-		case DISPLAYSINGLE:
-			//display a single task:
-			DisplaySingle(&tasks);
-			break;
-		case DISPLAYRANGE:
-			//display a range of tasks;
-			DisplayByRange(&tasks);
-			break;
-		case DISPLAYALL:
-			//display a range of tasks;
-			DisplayAll(&tasks);
-			break;
-		case SEARCH:
-			//search for a task;
-			SearchTask(&tasks);
-			break;
-		case EXIT:
+		//case 4 :
+		//	//display a single task:
+		//	DisplaySingle(&tasks);
+		//	break;
+		//case 5:
+		//	//display a range of tasks;
+		//	DisplayByRange(&tasks);
+		//	break;
+		//case 6:
+		//	//display a range of tasks;
+		//	DisplayAll(&tasks);
+		//	break;
+		//case 7:
+		//	//search for a task;
+		//	SearchTask(&tasks);
+		//	break;
+		case 0:
 
 			printf("Quitting the program");
 			WriteTaskListToFile(tasks, FILENAME);
