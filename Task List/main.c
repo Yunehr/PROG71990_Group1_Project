@@ -1,74 +1,68 @@
 #include "header.h"
-//#include <stdio.h>
 #define FILENAME "tasks.txt"
 
-
 int main(void) {
-	PTTASK tasks[MAX_TASKS] = { NULL }; // NULL is potentially causing errors in line 30
-	int taskCount = 0;
-	int MenuInput = 0;
-	// int validInput = 0;		// is this needed still???
+    // Allocate memory for tasks dynamically
+    TASK* tasks = (TASK*)malloc(sizeof(TASK));
+    if (tasks == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    tasks->count = 0;
 
-	bool Check = ReadTaskListFromFile(&tasks, FILENAME);
-	if (Check == false) {
-		ReadTaskListFromFile(&tasks, FILENAME);
-	}
+    printf("Checking file for Previous data...\n");
+    bool Check = ReadTaskListFromFile(tasks, FILENAME);
+    if (Check) { printf("Completed\n"); }
+    if (!Check) {
+        fprintf(stderr, "Initial read failed, file will be created\n");
+    }
 
-	do {
-		DisplayMenu();
-		//If Menuinput = 0 loop will end, so this would be fine.
-		scanf_s("%d", &MenuInput);
+    int MenuInput = 0;
+    do {
+        DisplayMenu();
+        int validInput = scanf("%d", &MenuInput);
+        if (validInput != 1 || MenuInput < 0 || MenuInput > 7) {
+            while (getchar() != '\n');
+            printf("Invalid Input. Please enter a number between 0 and 7:\n");
+            continue;
+        }
 
-		//if (validInput != 1) {
-		//	while (getchar() != '\n');
-		//	printf("Invalid Input. Please enter a number between 1 and 8:\n");
+        switch (MenuInput) {
+        case 1:
+            AddTask(tasks);
+            break;
+        case 2:
+            DeleteTask(tasks);
+            break;
+        case 3:
+            UpdateTask(tasks);
+            break;
+        case 4:
+            DisplaySingle(tasks);
+            break;
+        case 5:
+            DisplayByRange(tasks);
+            break;
+        case 6:
+            DisplayAll(tasks);
+            break;
+        case 7:
+            SearchTask(tasks);
+            break;
+        case 0:
+            printf("Saving To File...\n");
+            //WriteTaskListToFile(tasks, FILENAME);
+            if (WriteTaskListToFile(tasks, FILENAME)) { printf("Completed\n"); }
+            printf("Quitting the program\n");
+            break;
+        default:
+            printf("Invalid input, please try again\n");
+            break;
+        }
+    } while (MenuInput != 0);
 
-		//}
-		//else if (MenuInput < 1 || MenuInput > 8) {
-		//	printf("Invalid Input. Please enter a number between 1 and 8: \n");
-		//}
-		switch (MenuInput)
-		{
-		case 1:
-			AddTask(&tasks);	//TODO: verify if tasks.data == NULL or initialize  to zero when tasks is created
-			break;
-		case 2:
-			DeleteTask(&tasks);
-			break;
-		case 3:
-			UpdateTask(&tasks);
-			break;
-		//case 4 :
-		//	//display a single task:
-		//	DisplaySingle(&tasks);
-		//	break;
-		//case 5:
-		//	//display a range of tasks;
-		//	DisplayByRange(&tasks);
-		//	break;
-		//case 6:
-		//	//display a range of tasks;
-		//	DisplayAll(&tasks);
-		//	break;
-		//case 7:
-		//	//search for a task;
-		//	SearchTask(&tasks);
-		//	break;
-		case 0:
+    // Free dynamically allocated memory
+    free(tasks);
 
-			printf("Quitting the program");
-			WriteTaskListToFile(tasks, FILENAME);
-			for (int i = 0; i < taskCount; i++) {
-				free(tasks[i]);
-			}
-			break;
-		default:
-			printf("Invalid input please try again");
-			break;
-		}
-	} while (MenuInput);
-
-
-	return 0;
-
+    return 0;
 }
