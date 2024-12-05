@@ -51,4 +51,12 @@ DEV 2.1.0
   - Display & Search Features updated to reflect struct changes (Luis)
   - Updated Functionality of Read & Write to File Features (Ryan)
  
+DEV 2.1.1
+- BUGFIX
+  - Fixed Linker error
+
+DEV 3.0.0
+- UPDATES
+ - add, delete, update funcitons; adjusted struct to match update (Leanne)
+ - updated read and write functions to match struct and improve functionality (Leanne & Ryan)
 
