@@ -199,7 +199,7 @@ void DisplaySingle(const TASK* tasks) { //this works after fixes
     //}
 }
 
-void DisplayByRange(const TASK* tasks) {    // works    //TODO: allow user to input the name of the tag instead of the tag number
+void DisplayByRange(const TASK* tasks) {    // works    
     //Set four ints to search
     char* monthone[MAX_TAG_LENGTH] = { "" };
     //int monthtwo = 0;
