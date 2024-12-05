@@ -6,3 +6,15 @@ second task after update
 Dec
 steve
 hendrikse
+3
+Jan
+test1
+multiple tasks with same tag for display testing
+4
+Jan
+test2
+debugging tests
+5
+Jan
+test3
+ditto

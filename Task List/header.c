@@ -199,44 +199,56 @@ void DisplaySingle(const TASK* tasks) { //this works after fixes
     //}
 }
 
-void DisplayByRange(const TASK* tasks) {    // TODO: not fixed yet (still doesnt work)
+void DisplayByRange(const TASK* tasks) {    // works    //TODO: allow user to input the name of the tag instead of the tag number
     //Set four ints to search
     int monthone = 0;
-    int monthtwo = 0;
-    printf("Pleast input the start month you want to search(Use format like 12 or Dec):\n");
+    //int monthtwo = 0;
+    printf("Pleast input the month you want to search(Use format like 12 or Dec):\n");
     scanf("%d", &monthone);
-    printf("Pleast input the end month you want to search(Use format like 12 or Dec):\n");
-    scanf("%d", &monthtwo);
+   /* printf("Pleast input the end month you want to search(Use format like 12 or Dec):\n");
+    scanf("%d", &monthtwo);*/
     int i = 0;
     int found = 0;
-    for (i = 0; i < tasks->data->id; i++) {
+    for (i = 0; i < tasks->count; i++) {
         //Check if a task exists in the range of two dates.
-        if (tasks->data[i].tag >= monthone &&
-            tasks->data[i].tag <= monthtwo){
-            found = 1;
-            //If found one,break and go to the next step.
-            break;
-        }
-        //If not found,the value of found is the initial 0,so use the !found to print and return.
-        if (!found) {
-            printf("The task doesn't exist.\n");
-            return;
-        }
-        //If tasks exist,print the title first.
-        printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-        //Then use loop to print every task between the two dates,just like the single one.
-        for (i = 0; i < tasks->count; i++) {
-            if (tasks->data[i].tag >= monthone &&
-                tasks->data[i].tag <= monthtwo) {
-                printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-                    tasks->data[i].id,
-                    //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
-                    monthNames[tasks->data[i].tag],
-                    tasks->data[i].name,
-                    tasks->data[i].description);
+        if (tasks->data[i].tag == monthone) {
+            if (found == 0) {
+                printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
             }
+            printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+                tasks->data[i].id,
+                //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
+                monthNames[tasks->data[i].tag],
+                tasks->data[i].name,
+                tasks->data[i].description);
+            found++;
+            //If found one,break and go to the next step.
+            // break;
         }
     }
+    if (found == 0) {
+        printf("No tasks found under tag: '%s'\n", monthNames[monthone]);
+    }
+        //If not found,the value of found is the initial 0,so use the !found to print and return.
+        /*if (!found) {
+            printf("The task doesn't exist.\n");
+            return;
+        }*/
+        ////If tasks exist,print the title first.
+        //printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+        ////Then use loop to print every task between the two dates,just like the single one.
+        //for (i = 0; i < tasks->count; i++) {
+        //    if (tasks->data[i].tag >= monthone &&
+        //        tasks->data[i].tag <= monthtwo) {
+        //        printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+        //            tasks->data[i].id,
+        //            //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
+        //            monthNames[tasks->data[i].tag],
+        //            tasks->data[i].name,
+        //            tasks->data[i].description);
+        //    }
+        //}
+    //}
 }
 
 void DisplayAll(const TASK* tasks) {    // this works
