@@ -262,183 +262,171 @@ void SearchTask(const TASK* tasks) {
 }
 
 
+// writes a tag to file
 bool WriteTagToFile(INFO t, FILE* fp) {
-    switch (t.tag) {        // tag        
-    case Jan:   fprintf(fp, "Jan\n");
-        break;
-    case Feb:   fprintf(fp, "Feb\n");
-        break;
-    case Mar:   fprintf(fp, "Mar\n");
-        break;
-    case Apr:   fprintf(fp, "Apr\n");
-        break;
-    case May:   fprintf(fp, "May\n");
-        break;
-    case Jun:   fprintf(fp, "Jun\n");
-        break;
-    case Jul:   fprintf(fp, "Jul\n");
-        break;
-    case Aug:   fprintf(fp, "Aug\n");
-        break;
-    case Sep:   fprintf(fp, "Sep\n"); 
-        break;
-    case Oct:   fprintf(fp, "Oct\n"); 
-        break;
-    case Nov:   fprintf(fp, "Nov\n"); 
-        break;
-    case Dec:   fprintf(fp, "Dec\n"); 
-        break;
-    default:    fprintf(stderr, "unknown Tag\n");
-        break; return false;
-    }
-    return true;
-}
-
-int ReadTagFromFile(FILE* fp) {
-    char type[MAX_TAG_LENGTH] = { "" };
-    char* result = fgets(type, MAX_TAG_LENGTH, fp);
-    if (result == NULL) {  // bad things happened
-        fprintf(stderr, "error, not able to read type from file\n");
-        exit(EXIT_FAILURE);
-    }
-    CleanNewLineFromString(type);
-    if (strncmp(type, "Jan", strlen("Jan")) == 0) {
-        return Jan;
-    }
-    else if (strncmp(type, "Feb", strlen("Feb")) == 0) {
-        return Feb;
-    }
-    else if (strncmp(type, "Mar", strlen("Mar")) == 0) {
-        return Mar;
-    }
-    else if (strncmp(type, "Apr", strlen("Apr")) == 0) {
-        return Apr;
-    }
-    else if (strncmp(type, "May", strlen("May")) == 0) {
-        return May;
-    }
-    else if (strncmp(type, "Jun", strlen("Jun")) == 0) {
-        return Jun;
-    }
-    else if (strncmp(type, "Jul", strlen("Jul")) == 0) {
-        return Jul;
-    }
-    else if (strncmp(type, "Aug", strlen("Aug")) == 0) {
-        return Aug;
-    }
-    else if (strncmp(type, "Sep", strlen("Sep")) == 0) {
-        return Sep;
-    }
-    else if (strncmp(type, "Oct", strlen("Oct")) == 0) {
-        return Oct;
-    }
-    else if (strncmp(type, "Nov", strlen("Nov")) == 0) {
-        return Nov;
-    }
-    else if (strncmp(type, "Dec", strlen("Dec")) == 0) {
-        return Dec;
-    }
-    else {
-        fprintf(stderr, "disaster!  exiting...\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-
-
-bool WriteTaskListToFile(PTTASK t, char* filename) {
-    FILE* fp = fopen(filename, "w"); //writing to file
-    if (fp == NULL) {
-        fprintf(stderr, "error, not able to open file for writing\n");
-        return false;
-    }
-    if (t->data == NULL) {    //if there are no tasks, creates file with empty tasks
-        //t->data[0].id = 0;      // initializing to zero, not magic number
+    if (t.tag >= Jan && t.tag <= Dec) {
+        fprintf(fp, "%s\n", monthNames[t.tag]);
         return true;
     }
-    for (int i = 0; i < MAX_TASKS; i++) {
-        if (t == NULL) {
-            return true;
-        }
-        WriteTaskToFile(t->data[i], fp);
+    else {
+        fprintf(stderr, "unknown Tag\n");
+        return false;
     }
-    fclose(fp);
-    return true;
 }
 
+// writes a single task to file
 bool WriteTaskToFile(INFO t, FILE* fp) {
-    fprintf(fp, "%d\n", t.id);              //id#
+    fprintf(fp, "%d\n", t.id);              // id#
     WriteTagToFile(t, fp);                  // tag
     fprintf(fp, "%s\n", t.name);            // name
     fprintf(fp, "%s\n", t.description);     // description
     return true;
 }
 
-bool ReadTaskListFromFile(TASK* t, char* filename) {
-    FILE* fp = fopen(filename, "r");    // read from file
+// writes list of tasks to file
+bool WriteTaskListToFile(const TASK* tasks, const char* filename) {
+    FILE* fp = fopen(filename, "w");
     if (fp == NULL) {
-        fprintf(stderr, "error, not able to open file for writing\n");
-        //fclose(fp);
-        FILE* nfp = fopen(filename, "w"); //writing to file
-        if (nfp == NULL) {
-            fprintf(stderr, "error, not able to open file for writing\n");
-            return false;
-        }
-        INFO InitialTask = { 0 };
-        InitialTask = CreateVoidTask(InitialTask);
-        WriteTaskToFile(InitialTask, nfp);
-        fclose(nfp);
+        fprintf(stderr, "Error: unable to open file for writing\n");
         return false;
     }
-    for (int i = 0; i < MAX_TASKS; i++) {   
-        t->data[i] = ReadTaskFromFile(fp);
+    for (int i = 0; i < tasks->count; i++) {
+        WriteTaskToFile(tasks->data[i], fp);
     }
     fclose(fp);
     return true;
 }
 
-// TODO: finish this
-INFO ReadTaskFromFile(FILE * fp) {
-    
-    
-    INFO tempTask = { 0 }; 
+// translates a tag from a string to a Int
+int ReadTagFromFile(FILE* fp) {
+    char type[MAX_TAG_LENGTH] = { "" };
+    char* result = fgets(type, MAX_TAG_LENGTH, fp);
+    if (result == NULL) {
+        fprintf(stderr, "Error, not able to read type from file\n");
+        exit(EXIT_FAILURE);
+    }
+    CleanNewLineFromString(type);
 
-    // id#
-    int id = 0; // initialize to 0 to be safe
-    int numResult = fscanf(fp, "%d\n", &id);
-    if (numResult != 1) {
-        fprintf(stderr, "error, not able to read task id# from file\n");
+    for (int i = 0; i < 13; i++) { // this is a magic number
+        if (strncmp(type, monthNames[i], strlen(monthNames[i])) == 0) { 
+            return i;
+        }
+    }
+    fprintf(stderr, "Disaster! Exiting...\n");  // it it gets to here, something went wrong
+    exit(EXIT_FAILURE);
+}
+
+// reads a single task from file
+INFO ReadTaskFromFile(FILE* fp) {
+    INFO tempTask = { 0 };
+
+    // retrieving id#
+    int id = 0;  // initialize to 0 to be safe
+    if (fscanf(fp, "%d\n", &id) != 1) {
+        fprintf(stderr, "Error, not able to read task ID from file\n");
         fclose(fp);
         exit(EXIT_FAILURE);
     }
     tempTask.id = id;
-   
-    // TAG
-    int tagNum = ReadTagFromFile(fp);
-    (tempTask.tag) = (TAG)tagNum;
 
-    // name
+    //retrieving tag#
+    int tagNum = ReadTagFromFile(fp);
+    tempTask.tag = (TAG)tagNum;
+
+    //retrieving task name
     char tmpName[NAME_LENGTH] = { 0 };
-    char* nameResult = fgets(tmpName, NAME_LENGTH, fp);
-    if (nameResult == NULL) {
-        fprintf(stderr, "error, not able to read name from file\n");
+    if (fgets(tmpName, NAME_LENGTH, fp) == NULL) {
+        fprintf(stderr, "Error, not able to read name from file\n");
         fclose(fp);
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpName);
     strncpy(tempTask.name, tmpName, NAME_LENGTH);
-    
 
-    // description
-    char tmpDesc[NAME_LENGTH] = { 0 };
-    char* descResult = fgets(tmpDesc, NAME_LENGTH, fp);
-    if (descResult == NULL) {
-        fprintf(stderr, "error, not able to read Description from file\n");
+    // retrieving task description
+    char tmpDesc[MAX_LENGTH] = { 0 };
+    if (fgets(tmpDesc, MAX_LENGTH, fp) == NULL) {
+        fprintf(stderr, "Error, not able to read description from file\n");
         fclose(fp);
         exit(EXIT_FAILURE);
     }
     CleanNewLineFromString(tmpDesc);
-    strncpy(tempTask.description, tmpDesc, NAME_LENGTH);
+    strncpy(tempTask.description, tmpDesc, MAX_LENGTH);
 
     return tempTask;
+}
+
+// ReadTaskListFromFile function definition
+bool ReadTaskListFromFile(TASK* t, const char* filename) {
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "File not found, creating a new one...\n");
+
+        FILE* nfp = fopen(filename, "w");
+        if (nfp == NULL) {
+            fprintf(stderr, "Error: unable to create file for writing\n");
+            return false;
+        }
+
+        for (int i = 0; i < MAX_TASKS; i++) {       // dont remember why this part works, but it does so dont touch
+            t->data[i] = CreateVoidTask((INFO) { 0 });  // I think it initializes INFO to zero to save a line of code
+            WriteTaskToFile(t->data[i], nfp);
+        }
+        fclose(nfp);
+        return true;
+    }
+
+    // Reset task count
+    t->count = 0;
+
+    while (1) {
+        if (feof(fp)) { //Checks for end of file
+            break;
+        }
+
+        INFO tempTask = { 0 };
+        
+        // read task id
+        int id = 0;
+        if (fscanf(fp, "%d\n", &id) != 1) {
+            if (feof(fp)) break; // checking for end of file to continue program without error
+            fprintf(stderr, "Error, not able to read task ID from file\n");
+            break;
+        }
+        tempTask.id = id;
+
+        // read tag
+        int tagNum = ReadTagFromFile(fp);
+        tempTask.tag = (TAG)tagNum;
+
+        //read task name
+        char tmpName[NAME_LENGTH] = { 0 };
+        if (fgets(tmpName, NAME_LENGTH, fp) == NULL) {
+            if (feof(fp)) break;
+            fprintf(stderr, "Error, not able to read name from file\n");
+            break;
+        }
+        CleanNewLineFromString(tmpName);
+        strncpy(tempTask.name, tmpName, NAME_LENGTH);
+
+        // read task description
+        char tmpDesc[MAX_LENGTH] = { 0 };
+        if (fgets(tmpDesc, MAX_LENGTH, fp) == NULL) {
+            if (feof(fp)) break;
+            fprintf(stderr, "Error, not able to read description from file\n");
+            break;
+        }
+        CleanNewLineFromString(tmpDesc);
+        strncpy(tempTask.description, tmpDesc, MAX_LENGTH);
+
+        // point to this task and add 1 to task count
+        t->data[t->count] = tempTask;
+        t->count++;
+        if (t->count >= MAX_TASKS) { // maximum task ammount reached
+            break;
+        }
+    }
+
+    fclose(fp);
+    return true;
 }
