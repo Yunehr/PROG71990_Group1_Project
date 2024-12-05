@@ -14,6 +14,7 @@ int main(void) {
     bool Check = ReadTaskListFromFile(tasks, FILENAME);
     if (Check) { printf("Completed\n"); }
     if (!Check) {
+        printf("Failed\n");
         fprintf(stderr, "Initial read failed, file will be created\n");
     }
 

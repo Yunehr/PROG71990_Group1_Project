@@ -60,11 +60,10 @@ void SearchTask(const TASK* tasks);
 
 //Save/Read from disk
 bool WriteTagToFile(INFO t, FILE* fp);
-int ReadTagFromFile(FILE* fp);
-
-bool WriteTaskListToFile(PTTASK t, char* filename);
 bool WriteTaskToFile(INFO t, FILE* fp);
+bool WriteTaskListToFile(TASK* t, char* filename);
 
+int ReadTagFromFile(FILE* fp);
 bool ReadTaskListFromFile(TASK* t, char* filename);
 INFO ReadTaskFromFile(FILE* fp);
 

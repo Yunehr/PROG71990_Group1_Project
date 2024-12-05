@@ -10,7 +10,8 @@ void DisplayMenu(void) {
     printf("|3) Update an exsisting task                            |\n");
     printf("|4) Display a single task                               |\n");
     printf("|5) Display a range of tasks                            |\n");
-    printf("|6) Search for a task                                   |\n");
+    printf("|6) Display all tasks                                   |\n");
+    printf("|7) Search for a task                                   |\n");
     printf("|0) Quit                                                |\n");
     printf("_________________________________________________________\n");
 }
@@ -141,9 +142,9 @@ INFO CreateVoidTask(INFO t) {
 //First I used this function in order to display single task.
 //But I found if we add dates of the calender,using date is much more make sense.
 //Finally this function would be used on search function by names.
-int FindByName(TASK* tasks, char name[]) {
+int FindByName(const TASK* tasks, char name[]) {                        // works after changes
     int i = 0;
-    for (i = 0; i < tasks->data->id; i++) {
+    for (i = 0; i < tasks->count; i++) {
         if (strcmp(tasks->data[i].name,name) == 0) {
             return i;
         }
@@ -152,7 +153,7 @@ int FindByName(TASK* tasks, char name[]) {
     return EOF;
 }
 
-void DisplaySingle(const TASK* tasks) {
+void DisplaySingle(const TASK* tasks) { //this works after fixes
     //Set two ints to search
     int id = 0;
     printf("Pleast input the id of the task you want to search:\n");
@@ -160,36 +161,45 @@ void DisplaySingle(const TASK* tasks) {
     //search the data to find the task in the same date.
     int i = 0;
     int found = 0;
-    for (i = 0; i < tasks->data->id; i++) {
+    for (i = 0; i < tasks->count; i++) {
         //Check if a task exists for a specified date
         if (tasks->data[i].id == id) {
-            found = 1;
-            //If found one,break and go to the next step.
-            break;
-        }
-        //If not found,the value of found is the initial 0,so use the !found to print and return.
-        if (!found) {
-            printf("The task doesn't exist.\n");
-            return;
-        }
-    }
-    //If tasks exist,print the title "ID", "Tag", "Name", "Description" first.
-    //\t means one press of Tab.
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-    //Then use loop to print every task in the specific date, because there maybe not only one task in single date.
-    for (i = 0; i < tasks->data->id; i++) {
-        if (tasks->data[i].id == id) {
+            //found = 1;
+            printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
             printf("%-4d\t%-4s\t%-20s\t%-100s\n",
                 tasks->data[i].id,
                 //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
                 monthNames[tasks->data[i].tag],
                 tasks->data[i].name,
                 tasks->data[i].description);
-        }
+            //If found one,break and go to the next step.
+            return;
+        }   
     }
+    printf("The task doesn't exist.\n");
+    ////If not found,the value of found is the initial 0,so use the !found to print and return.
+    //if (found == 0) {
+    //    printf("The task doesn't exist.\n");
+    //    return;
+    //}
+
+    //If tasks exist,print the title "ID", "Tag", "Name", "Description" first.
+    //\t means one press of Tab.
+    //printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+    ////Then use loop to print every task in the specific date, because there maybe not only one task in single date.
+    //for (i = 0; i < tasks->data->id; i++) {
+    //    if (tasks->data[i].id == id) {
+    //        printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+    //            tasks->data[i].id,
+    //            //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
+    //            monthNames[tasks->data[i].tag],
+    //            tasks->data[i].name,
+    //            tasks->data[i].description);
+    //    }
+    //}
 }
 
-void DisplayByRange(const TASK* tasks) {
+void DisplayByRange(const TASK* tasks) {    // TODO: not fixed yet (still doesnt work)
     //Set four ints to search
     int monthone = 0;
     int monthtwo = 0;
@@ -213,9 +223,9 @@ void DisplayByRange(const TASK* tasks) {
             return;
         }
         //If tasks exist,print the title first.
-        printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+        printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
         //Then use loop to print every task between the two dates,just like the single one.
-        for (i = 0; i < tasks->data->id; i++) {
+        for (i = 0; i < tasks->count; i++) {
             if (tasks->data[i].tag >= monthone &&
                 tasks->data[i].tag <= monthtwo) {
                 printf("%-4d\t%-4s\t%-20s\t%-100s\n",
@@ -229,10 +239,10 @@ void DisplayByRange(const TASK* tasks) {
     }
 }
 
-void DisplayAll(const TASK* tasks) {
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+void DisplayAll(const TASK* tasks) {    // this works
+    printf("\n%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
     int i = 0;
-    for (i = 0; i < tasks->data->id; i++) {
+    for (i = 0; i < tasks->count; i++) {
         printf("%-4d\t%-4s\t%-20s\t%-100s\n",
             tasks->data[i].id,
             //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
@@ -242,21 +252,21 @@ void DisplayAll(const TASK* tasks) {
     }
 }
 
-void SearchTask(const TASK* tasks) {
+void SearchTask(const TASK* tasks) { // works after changes
     char name[NAME_LENGTH] = { 0 };
     printf("Pleast input the task name you want to search:\n");
     scanf("%s", name);
     //Use the function FindByName to compare names in the data,put the int of return in the parameter temp.
-    int temp = FindByName(&tasks, name);
+    int temp = FindByName(tasks, name);
     if (temp == EOF) {
         printf("This task doesn't exist.\n");
         return;
     }
     //Print the title and the data found by FindByName.
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+    printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
     printf("%-4d\t%-4s\t%-20s\t%-100s\n",
         tasks->data[temp].id,
-        tasks->data[temp].tag,
+        monthNames[tasks->data[temp].tag],
         tasks->data[temp].name,
         tasks->data[temp].description);
 }
@@ -284,14 +294,14 @@ bool WriteTaskToFile(INFO t, FILE* fp) {
 }
 
 // writes list of tasks to file
-bool WriteTaskListToFile(const TASK* tasks, const char* filename) {
+bool WriteTaskListToFile(TASK* t, char* filename) {
     FILE* fp = fopen(filename, "w");
     if (fp == NULL) {
         fprintf(stderr, "Error: unable to open file for writing\n");
         return false;
     }
-    for (int i = 0; i < tasks->count; i++) {
-        WriteTaskToFile(tasks->data[i], fp);
+    for (int i = 0; i < t->count; i++) {
+        WriteTaskToFile(t->data[i], fp);
     }
     fclose(fp);
     return true;
@@ -368,8 +378,8 @@ bool ReadTaskListFromFile(TASK* t, const char* filename) {
             return false;
         }
 
-        for (int i = 0; i < MAX_TASKS; i++) {       // dont remember why this part works, but it does so dont touch
-            t->data[i] = CreateVoidTask((INFO) { 0 });  // I think it initializes INFO to zero to save a line of code
+        for (int i = 0; i < MAX_TASKS; i++) {
+            t->data[i] = CreateVoidTask((INFO) { 0 });  // initializes INFO to zero to save a line of code
             WriteTaskToFile(t->data[i], nfp);
         }
         fclose(nfp);
