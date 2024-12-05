@@ -201,17 +201,28 @@ void DisplaySingle(const TASK* tasks) { //this works after fixes
 
 void DisplayByRange(const TASK* tasks) {    // works    //TODO: allow user to input the name of the tag instead of the tag number
     //Set four ints to search
-    int monthone = 0;
+    char* monthone[MAX_TAG_LENGTH] = { "" };
     //int monthtwo = 0;
     printf("Pleast input the month you want to search(Use format like 12 or Dec):\n");
-    scanf("%d", &monthone);
+    scanf("%s", &monthone);
+    int month = atoi(monthone); 
+    if (month == 0) {   // checks if user entered monthName (Jan, Feb, etc...)
+        for (int i = 0; i < NUMBER_OF_TAGS; i++) {
+            if (strncmp(monthone, monthNames[i], strlen(monthNames[i])) == 0) {
+                month = i;
+            }
+        }
+        if (month == 0) { 
+            printf("Value 'Invalid' or does not exist\n");
+            return;
+        }
+    }
    /* printf("Pleast input the end month you want to search(Use format like 12 or Dec):\n");
     scanf("%d", &monthtwo);*/
     int i = 0;
     int found = 0;
     for (i = 0; i < tasks->count; i++) {
-        //Check if a task exists in the range of two dates.
-        if (tasks->data[i].tag == monthone) {
+        if (tasks->data[i].tag == month) {
             if (found == 0) {
                 printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
             }
@@ -227,7 +238,7 @@ void DisplayByRange(const TASK* tasks) {    // works    //TODO: allow user to in
         }
     }
     if (found == 0) {
-        printf("No tasks found under tag: '%s'\n", monthNames[monthone]);
+        printf("No tasks found under tag: '%s'\n", monthNames[month]);
     }
         //If not found,the value of found is the initial 0,so use the !found to print and return.
         /*if (!found) {

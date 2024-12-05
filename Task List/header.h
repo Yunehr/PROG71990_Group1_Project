@@ -8,8 +8,9 @@
 
 #define NAME_LENGTH		100
 #define MAX_LENGTH		200
-#define MAX_TASKS		100
+#define MAX_TASKS		10
 #define MAX_TAG_LENGTH	10
+#define NUMBER_OF_TAGS	13
 
 enum Options {
 	EXIT,
