@@ -57,6 +57,6 @@ DEV 2.1.1
 
 DEV 3.0.0
 - UPDATES
- - add, delete, update funcitons; adjusted struct to match update (Leanne)
- - updated read and write functions to match struct and improve functionality (Leanne & Ryan)
+   - add, delete, update funcitons; adjusted struct to match update (Leanne)
+   - updated read and write functions to match struct and improve functionality (Leanne & Ryan)
 
