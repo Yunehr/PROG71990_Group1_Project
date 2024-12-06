@@ -77,12 +77,24 @@ void AddTask(TASK* tasks) {
             tasks->capacity += INC_TASKS;
             printf("Add memory success.\n");
         }
-        }
-    //get the user input to the data
+    }
+    //Set days for every month,Jan as 0, so use month - 1.
+    int max_days[] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    //get the user input to the data and check input.
     printf("Please enter task month: \n");
-    scanf("%d", &(tasks->data[tasks->id].month));
+    while (scanf("%d", &(tasks->data[tasks->id].month)) != 1
+        || tasks->data[tasks->id].month < 1
+        || tasks->data[tasks->id].month >12) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter month again between 1-12: \n");
+    }
     printf("Please enter task day: \n");
-    scanf("%d", &(tasks->data[tasks->id].day));
+    while (scanf("%d", &(tasks->data[tasks->id].day)) != 1
+        || tasks->data[tasks->id].day < 1
+        || tasks->data[tasks->id].day >max_days[tasks->data[tasks->id].month - 1]) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter date again between the month's date: \n");
+    }
     printf("Please enter task name: \n");
     scanf("%s", tasks->data[tasks->id].name);
     printf("Please enter the task description: \n");
@@ -126,11 +138,23 @@ void UpdateTask(TASK* tasks) {
         return;
     }
     //If found,ask user input to update all of the information like in the ADD function.
-    //Because found pos,so change the data[id] to data[pos].
+    //Because found temp,so change the data[id] to data[temp].
+    //Checking input is same as the Add function.
+    int max_days[] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     printf("Please enter task month: \n");
-    scanf("%d", &(tasks->data[temp].month));
+    while (scanf("%d", &(tasks->data[temp].month)) != 1
+        || tasks->data[temp].month < 1
+        || tasks->data[temp].month >12) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter month again between 1-12: \n");
+    }
     printf("Please enter task day: \n");
-    scanf("%d", &(tasks->data[temp].day));
+    while (scanf("%d", &(tasks->data[temp].day)) != 1
+        || tasks->data[temp].day < 1
+        || tasks->data[temp].day >max_days[tasks->data[temp].month - 1]) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter date again between the month's date: \n");
+    }
     printf("Please enter task name: \n");
     scanf("%s", tasks->data[temp].name);
     printf("Please enter the task description: \n");
@@ -160,10 +184,22 @@ void DisplaySingle(const TASK* tasks) {
     //Set two ints to search
     int month = 0;
     int day = 0;
+    //Checking input is same as the Add function.
+    int max_days[] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     printf("Please enter task month: \n");
-    scanf("%d", &month);
+    while (scanf("%d", &month) != 1
+        || month < 1
+        || month >12) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter month again between 1-12: \n");
+    }
     printf("Please enter task day: \n");
-    scanf("%d", &day);
+    while (scanf("%d", &day) != 1
+        || day < 1
+        || day >max_days[month - 1]) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter date again between the month's date: \n");
+    }
     //search the data to find the task in the same date.
     int i = 0;
     int found = 0;
@@ -208,14 +244,36 @@ void DisplayByRange(const TASK* tasks) {
     int dayone = 0;
     int monthtwo = 0;
     int daytwo = 0;
-    printf("Pleast input the started month of the date you want to search:\n");
-    scanf("%d", &monthone);
-    printf("Pleast input the day of the started month you want to search:\n");
-    scanf("%d", &dayone);
-    printf("Pleast input the ended month of the date you want to search:\n");
-    scanf("%d", &monthtwo);
-    printf("Pleast input the day of the ended month you want to search:\n");
-    scanf("%d", &daytwo);
+    //Checking input is same as the Add function.
+    int max_days[] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    printf("Please enter the started month of the date you want to search: \n");
+    while (scanf("%d", &monthone) != 1
+        || monthone < 1
+        || monthone >12) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter month again between 1-12: \n");
+    }
+    printf("Please enter the day of the first month you want to search: \n");
+    while (scanf("%d", &dayone) != 1
+        || dayone < 1
+        || dayone >max_days[monthone - 1]) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter date again between the first month's date: \n");
+    }
+    printf("Please enter the second month of the date you want to search: \n");
+    while (scanf("%d", &monthtwo) != 1
+        || monthtwo < 1
+        || monthtwo >12) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter month again between 1-12: \n");
+    }
+    printf("Please enter the day of the second month you want to search: \n");
+    while (scanf("%d", &daytwo) != 1
+        || daytwo < 1
+        || daytwo >max_days[monthtwo - 1]) {
+        while (getchar() != '\n');
+        printf("Invalid input,please enter date again between the second month's date: \n");
+    }
     int i = 0;
     int found = 0;
     for (i = 0; i < tasks->id; i++) {
