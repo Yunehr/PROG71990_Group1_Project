@@ -33,9 +33,11 @@ int main(void) {
             AddTask(tasks);
             break;
         case 2:
+            DisplayAll(tasks);
             DeleteTask(tasks);
             break;
         case 3:
+            DisplayAll(tasks);
             UpdateTask(tasks);
             break;
         case 4:
