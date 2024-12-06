@@ -59,4 +59,7 @@ DEV 3.0.0
 - UPDATES
    - add, delete, update funcitons; adjusted struct to match update (Leanne)
    - updated read and write functions to match struct and improve functionality (Leanne & Ryan)
+   - updated Display and Search function to match the struct and improve functionality (Luis & Ryan)
+ 
+
 
