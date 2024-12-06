@@ -1,8 +1,28 @@
 1
-Jan
-Test
-testing functionality of AddNewTask
-2
 Nov
 Updated second task
 second task after update
+2
+Dec
+steve
+hendrikse
+3
+Jan
+test1
+multiple tasks with same tag for display testing
+5
+Jan
+test3
+ditto
+6
+Dec
+secret
+never gonna give you up, never gonna let you down
+7
+Apr
+overflow check
+task 7: should still exist
+7
+Mar
+newTask
+supposed to be ID# 4 since due to ID#4 being deleted before creation
