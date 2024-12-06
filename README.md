@@ -59,4 +59,14 @@ DEV 3.0.0
 - UPDATES
    - add, delete, update funcitons; adjusted struct to match update (Leanne)
    - updated read and write functions to match struct and improve functionality (Leanne & Ryan)
+   - updated search and Display functions to match struct and improve functionality (Ryan & Luis)
+ 
+DEV 3.0.1
+- BUGFIX
+   - fixed error where duplicate ID#'s were being displayed after deleting a task and adding a new one (Whole Group)
+- UPDATES
+   - Runs DisplayAllTasks right before the Delete tasks Function is run for better user experience
+ 
+
+
 
