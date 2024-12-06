@@ -31,6 +31,7 @@ bool AddTask(TASK* tasks) {
 
     INFO newTask = { 0 };
     newTask.id = tasks->count + 1;  // Assign a new ID based on task count
+    
     while (getchar() != '\n');
     printf("Enter Task name:\n");
     scanf("%[^\n]s", newTask.name);
@@ -75,6 +76,7 @@ bool DeleteTask(TASK* tasks) {
            
             for (int j = i; j < tasks->count - 1; j++) {
                 tasks->data[j] = tasks->data[j + 1];
+                tasks->data[j].id--;
             }
             tasks->count--;
 

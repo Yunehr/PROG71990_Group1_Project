@@ -6,10 +6,6 @@ second task after update
 Dec
 steve
 hendrikse
-3
-Jan
-test1
-multiple tasks with same tag for display testing
 5
 Jan
 test3
