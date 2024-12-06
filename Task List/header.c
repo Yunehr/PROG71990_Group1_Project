@@ -85,6 +85,7 @@ void AddTask(TASK* tasks) {
     while (scanf("%d", &(tasks->data[tasks->id].month)) != 1
         || tasks->data[tasks->id].month < 1
         || tasks->data[tasks->id].month >12) {
+        //Use getchar to flushing the input buffer to avoid dead loop.
         while (getchar() != '\n');
         printf("Invalid input,please enter month again between 1-12: \n");
     }
@@ -95,10 +96,13 @@ void AddTask(TASK* tasks) {
         while (getchar() != '\n');
         printf("Invalid input,please enter date again between the month's date: \n");
     }
+    //Use %[^\n]s to get the input of space,and need to use getchar to flushing the input buffer.
+    while (getchar() != '\n');
     printf("Please enter task name: \n");
-    scanf("%s", tasks->data[tasks->id].name);
+    scanf("%[^\n]s", tasks->data[tasks->id].name);
+    while (getchar() != '\n');
     printf("Please enter the task description: \n");
-    scanf("%s", tasks->data[tasks->id].description);
+    scanf("%[^\n]s", tasks->data[tasks->id].description);
     //when get all informations, id++.
     tasks->id++;
     //Need Save Function(Save function could be used at the exit time.)
@@ -111,8 +115,9 @@ void DeleteTask(TASK* tasks) {
         printf("There are no tasks to delete.\n");
         return;
     }
+    while (getchar() != '\n');
     printf("Please enter the task name to delete:\n");
-    scanf("%s", name);
+    scanf("%[^\n]s", name);
     //If FindByName didn't find the task name,return EOF as -1.so when EOF,return.
     int temp = FindByName(tasks, name);
     if (temp == -1) {
@@ -129,8 +134,9 @@ void DeleteTask(TASK* tasks) {
 
 void UpdateTask(TASK* tasks) {
     char name[NAME_LENGTH] = { 0 };
+    while (getchar() != '\n');
     printf("Please enter the task name to update:\n");
-    scanf("%s", name);
+    scanf("%[^\n]s", name);
     int temp = FindByName(tasks, name);
     //If not found,print and return.
     if (temp == EOF) {
@@ -155,10 +161,12 @@ void UpdateTask(TASK* tasks) {
         while (getchar() != '\n');
         printf("Invalid input,please enter date again between the month's date: \n");
     }
+    while (getchar() != '\n');
     printf("Please enter task name: \n");
-    scanf("%s", tasks->data[temp].name);
+    scanf("%[^\n]s", tasks->data[temp].name);
+    while (getchar() != '\n');
     printf("Please enter the task description: \n");
-    scanf("%s", tasks->data[temp].description);
+    scanf("%[^\n]s", tasks->data[temp].description);
 }
 
 //Use char name[] to compare with tasks->data[i].name through strcmp,if found, return int i.
@@ -329,8 +337,9 @@ void DisplayAll(const TASK* tasks) {
 
 void SearchTask(const TASK* tasks) {
     char name[NAME_LENGTH] = { 0 };
+    while (getchar() != '\n');
     printf("Pleast input the task name you want to search:\n");
-    scanf("%s", name);
+    scanf("%[^\n]s", name);
     //Use the function FindByName to compare names in the data,put the int of return in the parameter temp.
     int temp = FindByName(tasks, name);
     if (temp == -1) {
