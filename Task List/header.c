@@ -31,12 +31,12 @@ bool AddTask(TASK* tasks) {
 
     INFO newTask = { 0 };
     newTask.id = tasks->count + 1;  // Assign a new ID based on task count
-
+    while (getchar() != '\n');
     printf("Enter Task name:\n");
-    scanf(" %[^\n]", newTask.name);
-
+    scanf("%[^\n]s", newTask.name);
+    while (getchar() != '\n');
     printf("Enter task description:\n");
-    scanf(" %[^\n]", newTask.description);
+    scanf("%[^\n]s", newTask.description);
 
     printf("Enter task tag (1-12 for months):\n");
     int tagNum;
@@ -154,29 +154,43 @@ int FindByName(const TASK* tasks, char name[]) {                        // works
 }
 
 void DisplaySingle(const TASK* tasks) { //this works after fixes
-    //Set two ints to search
     int id = 0;
     printf("Pleast input the id of the task you want to search:\n");
-    scanf("%d", &id);
-    //search the data to find the task in the same date.
+    while (scanf("%d", &id) != 1 || id < 1) {
+        //Use getchar to flushing the input buffer to avoid dead loop.
+        while (getchar() != '\n');
+        printf("Invalid input,please input the num of id again: \n");
+    }
+    //First search the data to find the task in the same date.
     int i = 0;
     int found = 0;
     for (i = 0; i < tasks->count; i++) {
         //Check if a task exists for a specified date
         if (tasks->data[i].id == id) {
             //found = 1;
-            printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-            printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+            found = 1;
+            //If found one,break and go to the next step.
+            break;
+        }
+        //If not found,the value of found is the initial 0,so use the found==0 to print and return.
+        if (found == 0) {
+            printf("The task doesn't exist.\n");
+            return;
+        }
+    //then print the title.if "Description" set %-100s that would be too long to have a new line,so adjust it to 40 first.
+    printf("%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
+    for (i = 0; i < tasks->count; i++) {
+        //Same condition like the check.Just want to print "The task doesn't exist."first if task doesn't exist.
+        if (tasks->data[i].id == id) {
+            printf("%-4d\t%-4s\t%-20s\t%-40s\n",
                 tasks->data[i].id,
                 //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
                 monthNames[tasks->data[i].tag],
                 tasks->data[i].name,
                 tasks->data[i].description);
-            //If found one,break and go to the next step.
-            return;
-        }   
+        }
     }
-    printf("The task doesn't exist.\n");
+    printf("\n");
     ////If not found,the value of found is the initial 0,so use the !found to print and return.
     //if (found == 0) {
     //    printf("The task doesn't exist.\n");
@@ -200,7 +214,6 @@ void DisplaySingle(const TASK* tasks) { //this works after fixes
 }
 
 void DisplayByRange(const TASK* tasks) {    // works    
-    //Set four ints to search
     char* monthone[MAX_TAG_LENGTH] = { "" };
     //int monthtwo = 0;
     printf("Pleast input the month you want to search(Use format like 12 or Dec):\n");
@@ -224,9 +237,9 @@ void DisplayByRange(const TASK* tasks) {    // works
     for (i = 0; i < tasks->count; i++) {
         if (tasks->data[i].tag == month) {
             if (found == 0) {
-                printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+                printf("%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
             }
-            printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+            printf("%-4d\t%-4s\t%-20s\t%-40s\n",
                 tasks->data[i].id,
                 //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
                 monthNames[tasks->data[i].tag],
@@ -263,10 +276,10 @@ void DisplayByRange(const TASK* tasks) {    // works
 }
 
 void DisplayAll(const TASK* tasks) {    // this works
-    printf("\n%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
+    printf("\n%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
     int i = 0;
     for (i = 0; i < tasks->count; i++) {
-        printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+        printf("%-4d\t%-4s\t%-20s\t%-40s\n",
             tasks->data[i].id,
             //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
             monthNames[tasks->data[i].tag],
@@ -277,8 +290,9 @@ void DisplayAll(const TASK* tasks) {    // this works
 
 void SearchTask(const TASK* tasks) { // works after changes
     char name[NAME_LENGTH] = { 0 };
+    while (getchar() != '\n');
     printf("Pleast input the task name you want to search:\n");
-    scanf("%s", name);
+    scanf("%[^\n]s", name);
     //Use the function FindByName to compare names in the data,put the int of return in the parameter temp.
     int temp = FindByName(tasks, name);
     if (temp == EOF) {
@@ -286,8 +300,8 @@ void SearchTask(const TASK* tasks) { // works after changes
         return;
     }
     //Print the title and the data found by FindByName.
-    printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-    printf("%-4d\t%-4s\t%-20s\t%-100s\n",
+    printf("%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
+    printf("%-4d\t%-4s\t%-20s\t%-40s\n",
         tasks->data[temp].id,
         monthNames[tasks->data[temp].tag],
         tasks->data[temp].name,
