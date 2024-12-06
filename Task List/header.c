@@ -167,50 +167,19 @@ void DisplaySingle(const TASK* tasks) { //this works after fixes
     for (i = 0; i < tasks->count; i++) {
         //Check if a task exists for a specified date
         if (tasks->data[i].id == id) {
-            //found = 1;
-            found = 1;
-            //If found one,break and go to the next step.
-            break;
-        }
-        //If not found,the value of found is the initial 0,so use the found==0 to print and return.
-        if (found == 0) {
-            printf("The task doesn't exist.\n");
-            return;
-        }
-    //then print the title.if "Description" set %-100s that would be too long to have a new line,so adjust it to 40 first.
-    printf("%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
-    for (i = 0; i < tasks->count; i++) {
-        //Same condition like the check.Just want to print "The task doesn't exist."first if task doesn't exist.
-        if (tasks->data[i].id == id) {
+            //then print the title.if "Description" set %-100s that would be too long to have a new line,so adjust it to 40 first.
+            printf("%-4s\t%-4s\t%-20s\t%-40s\n", "ID", "Tag", "Name", "Description");
             printf("%-4d\t%-4s\t%-20s\t%-40s\n",
                 tasks->data[i].id,
                 //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
                 monthNames[tasks->data[i].tag],
                 tasks->data[i].name,
                 tasks->data[i].description);
+            return; // function can end if the 
         }
     }
-    printf("\n");
-    ////If not found,the value of found is the initial 0,so use the !found to print and return.
-    //if (found == 0) {
-    //    printf("The task doesn't exist.\n");
-    //    return;
-    //}
-
-    //If tasks exist,print the title "ID", "Tag", "Name", "Description" first.
-    //\t means one press of Tab.
-    //printf("%-4s\t%-4s\t%-20s\t%-100s\n", "ID", "Tag", "Name", "Description");
-    ////Then use loop to print every task in the specific date, because there maybe not only one task in single date.
-    //for (i = 0; i < tasks->data->id; i++) {
-    //    if (tasks->data[i].id == id) {
-    //        printf("%-4d\t%-4s\t%-20s\t%-100s\n",
-    //            tasks->data[i].id,
-    //            //put the int of the task.data.tag into const char monthNames,like 1 is Jan,then print this monthNames[].
-    //            monthNames[tasks->data[i].tag],
-    //            tasks->data[i].name,
-    //            tasks->data[i].description);
-    //    }
-    //}
+    // you only get here if the task id# is not found
+    printf("The task doesn't exist.\n");
 }
 
 void DisplayByRange(const TASK* tasks) {    // works    

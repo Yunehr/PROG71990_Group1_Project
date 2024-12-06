@@ -1,8 +1,8 @@
-2
+1
 Nov
 Updated second task
 second task after update
-3
+2
 Dec
 steve
 hendrikse
@@ -10,10 +10,6 @@ hendrikse
 Jan
 test1
 multiple tasks with same tag for display testing
-4
-Jan
-test2
-debugging tests
 5
 Jan
 test3
@@ -26,3 +22,7 @@ never gonna give you up, never gonna let you down
 Apr
 overflow check
 task 7: should still exist
+7
+Mar
+newTask
+supposed to be ID# 4 since due to ID#4 being deleted before creation
