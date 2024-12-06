@@ -65,7 +65,8 @@ DEV 3.0.1
 - BUGFIX
    - fixed error where duplicate ID#'s were being displayed after deleting a task and adding a new one (Whole Group)
 - UPDATES
-   - Runs DisplayAllTasks right before the Delete tasks Function is run for better user experience
+   - Runs DisplayAllTasks right before the Delete tasks Function is run for better user experience  (Leanne)
+   - Runs DisplayAllTasks before the update Tasks funciton is run, for better user experience       (Leanne)
  
 
 
